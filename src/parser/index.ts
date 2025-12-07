@@ -17,6 +17,7 @@ export interface JSONSchema {
   allOf?: JSONSchema[];
   minItems?: number;
   maxItems?: number;
+  nullable?: boolean;
   [key: string]: unknown; // Para permitir keywords adicionales que ignoraremos
 }
 
@@ -31,6 +32,24 @@ export class ParserError extends Error {
  * Función principal que convierte JSON Schema a AST
  */
 export function parseSchema(schema: JSONSchema): ASTNode {
+  // Primero parseamos el schema sin considerar nullable
+  let node = parseSchemaWithoutNullable(schema);
+  
+  // Si el schema es nullable, envolver en union con null
+  if (schema.nullable === true) {
+    node = {
+      kind: "union",
+      types: [node, { kind: "primitive", type: "null" }],
+    };
+  }
+  
+  return node;
+}
+
+/**
+ * Parsea el schema sin considerar la propiedad nullable
+ */
+function parseSchemaWithoutNullable(schema: JSONSchema): ASTNode {
   // Manejar const primero (mayor prioridad)
   if (schema.const !== undefined) {
     return {
