@@ -25,5 +25,8 @@
   "peerDependencies": {
     "typescript": "^5"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@composio/core": "^0.2.6"
+  }
 }

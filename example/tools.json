@@ -1,0 +1,2021 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_ADD_SHEET",
+      "description": "Adds a new sheet (worksheet) to a spreadsheet. Use this tool to create a new tab within an existing Google Sheet, optionally specifying its title, index, size, and other properties. IMPORTANT: - Always provide the spreadsheetId. Use 'Search Spreadsheets' action if you need to find it by name - Sheet names must be unique within the spreadsheet - For tab colors, use EITHER rgbColor OR themeColor, never both - Index must be less than or equal to the current number of sheets - CONCURRENCY WARNING: Do not use 'index' when creating multiple sheets in parallel - this causes 'index is too high' errors. For parallel creation, omit the index field and let sheets be added at the end Common use cases: - Add a new sheet with a specific name - Insert a sheet at a specific position - Create a sheet with custom colors and formatting",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "object",
+            "description": "The properties the new sheet should have. All properties are optional. If none are specified, a default sheet will be created.",
+            "title": "SheetProperties",
+            "default": null,
+            "nullable": true,
+            "properties": {
+              "gridProperties": {
+                "type": "object",
+                "description": "Additional properties of the sheet if it's a grid sheet.",
+                "title": "GridProperties",
+                "default": null,
+                "nullable": true,
+                "properties": {
+                  "columnCount": {
+                    "type": "integer",
+                    "description": "The number of columns in the sheet.",
+                    "title": "Column Count",
+                    "default": null,
+                    "nullable": true,
+                    "minimum": 0
+                  },
+                  "columnGroupControlAfter": {
+                    "type": "boolean",
+                    "description": "True if the column group control toggle is shown after the group, false if before.",
+                    "title": "Column Group Control After",
+                    "default": null,
+                    "nullable": true
+                  },
+                  "frozenColumnCount": {
+                    "type": "integer",
+                    "description": "The number of columns that are frozen in the sheet.",
+                    "title": "Frozen Column Count",
+                    "default": null,
+                    "nullable": true,
+                    "minimum": 0
+                  },
+                  "frozenRowCount": {
+                    "type": "integer",
+                    "description": "The number of rows that are frozen in the sheet.",
+                    "title": "Frozen Row Count",
+                    "default": null,
+                    "nullable": true,
+                    "minimum": 0
+                  },
+                  "hideGridlines": {
+                    "type": "boolean",
+                    "description": "True if the gridlines are hidden, false if they are shown.",
+                    "title": "Hide Gridlines",
+                    "default": null,
+                    "nullable": true
+                  },
+                  "rowCount": {
+                    "type": "integer",
+                    "description": "The number of rows in the sheet.",
+                    "title": "Row Count",
+                    "default": null,
+                    "nullable": true,
+                    "minimum": 0
+                  },
+                  "rowGroupControlAfter": {
+                    "type": "boolean",
+                    "description": "True if the row group control toggle is shown after the group, false if before.",
+                    "title": "Row Group Control After",
+                    "default": null,
+                    "nullable": true
+                  }
+                },
+                "additionalProperties": false
+              },
+              "hidden": {
+                "type": "boolean",
+                "description": "True if the sheet is hidden in the UI, false if it's visible.",
+                "title": "Hidden",
+                "default": null,
+                "nullable": true
+              },
+              "index": {
+                "type": "integer",
+                "description": "The zero-based index where the sheet should be inserted. Must be less than or equal to the current number of sheets. If not set, the sheet will be added at the end. Example: 0 for the first position. CONCURRENCY WARNING: Do not use 'index' when creating multiple sheets in parallel - this causes 'index is too high' errors. For parallel creation, omit this field and let sheets be added at the end.",
+                "title": "Index",
+                "default": null,
+                "nullable": true,
+                "minimum": 0
+              },
+              "rightToLeft": {
+                "type": "boolean",
+                "description": "True if the sheet is an RTL sheet, false if it's LTR.",
+                "title": "Right To Left",
+                "default": null,
+                "nullable": true
+              },
+              "sheetId": {
+                "type": "integer",
+                "description": "The ID of the sheet. If not set, an ID will be randomly generated. Must be non-negative and unique within the spreadsheet. WARNING: Avoid setting this unless you need a specific ID.",
+                "title": "Sheet Id",
+                "default": null,
+                "nullable": true,
+                "minimum": 0
+              },
+              "sheetType": {
+                "type": "string",
+                "description": "The type of sheet.",
+                "title": "SheetType",
+                "default": "GRID",
+                "nullable": true,
+                "enum": [
+                  "GRID",
+                  "OBJECT",
+                  "DATA_SOURCE"
+                ]
+              },
+              "tabColorStyle": {
+                "type": "object",
+                "description": "The color of the sheet tab.",
+                "title": "ColorStyle",
+                "default": null,
+                "nullable": true,
+                "properties": {
+                  "rgbColor": {
+                    "type": "object",
+                    "description": "RGB color. Specify EITHER rgbColor OR themeColor, but not both. If using rgbColor, provide values for red, green, blue (0.0-1.0).",
+                    "title": "Color",
+                    "default": null,
+                    "nullable": true,
+                    "properties": {
+                      "alpha": {
+                        "type": "number",
+                        "description": "The fraction of this color that should be applied to the pixel. E.g. 0.5 for 50% transparent.",
+                        "title": "Alpha",
+                        "default": null,
+                        "nullable": true,
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "blue": {
+                        "type": "number",
+                        "description": "The amount of blue in the color as a value in the interval [0, 1].",
+                        "title": "Blue",
+                        "default": null,
+                        "nullable": true,
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "green": {
+                        "type": "number",
+                        "description": "The amount of green in the color as a value in the interval [0, 1].",
+                        "title": "Green",
+                        "default": null,
+                        "nullable": true,
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "red": {
+                        "type": "number",
+                        "description": "The amount of red in the color as a value in the interval [0, 1].",
+                        "title": "Red",
+                        "default": null,
+                        "nullable": true,
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "themeColor": {
+                    "type": "string",
+                    "description": "Theme color. Specify EITHER themeColor OR rgbColor, but not both. Use predefined theme colors like ACCENT1, TEXT, BACKGROUND, etc.",
+                    "title": "ThemeColorType",
+                    "default": null,
+                    "nullable": true,
+                    "enum": [
+                      "THEME_COLOR_TYPE_UNSPECIFIED",
+                      "TEXT",
+                      "BACKGROUND",
+                      "ACCENT1",
+                      "ACCENT2",
+                      "ACCENT3",
+                      "ACCENT4",
+                      "ACCENT5",
+                      "ACCENT6",
+                      "LINK"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              },
+              "title": {
+                "type": "string",
+                "description": "The name of the sheet. Must be unique within the spreadsheet. Example: \"Q3 Report\", \"Sales Data 2025\"",
+                "title": "Title",
+                "default": null,
+                "nullable": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "spreadsheetId": {
+            "type": "string",
+            "description": "The ID of the spreadsheet to add the sheet to. This is the long string of characters in the URL of your Google Sheet. Use the 'Search Spreadsheets' action first to find the spreadsheet ID by name if you don't have it.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheetId"
+        ],
+        "title": "AddSheetRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_AGGREGATE_COLUMN_DATA",
+      "description": "Searches for rows where a specific column matches a value and performs mathematical operations on data from another column.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "case_sensitive": {
+            "type": "boolean",
+            "description": "Whether the search should be case-sensitive.",
+            "title": "Case Sensitive",
+            "default": true,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "has_header_row": {
+            "type": "boolean",
+            "description": "Whether the first row contains column headers. If True, column names can be used for search_column and target_column.",
+            "title": "Has Header Row",
+            "default": true,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "operation": {
+            "type": "string",
+            "description": "The mathematical operation to perform on the target column values.",
+            "title": "Operation",
+            "enum": [
+              "sum",
+              "average",
+              "count",
+              "min",
+              "max",
+              "percentage"
+            ],
+            "examples": [
+              "sum",
+              "average",
+              "count",
+              "min",
+              "max",
+              "percentage"
+            ]
+          },
+          "percentage_total": {
+            "type": "number",
+            "description": "For percentage operation, the total value to calculate percentage against. If not provided, uses sum of all values in target column.",
+            "title": "Percentage Total",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              10000,
+              50000.5
+            ]
+          },
+          "search_column": {
+            "type": "string",
+            "description": "The column to search in. Can be a letter (e.g., 'A', 'B') or column name from header row (e.g., 'Region', 'Department').",
+            "title": "Search Column",
+            "examples": [
+              "A",
+              "Region",
+              "Department"
+            ]
+          },
+          "search_value": {
+            "type": "string",
+            "description": "The exact value to search for in the search column. Case-sensitive by default.",
+            "title": "Search Value",
+            "examples": [
+              "HSR",
+              "Sales",
+              "North Region"
+            ]
+          },
+          "sheet_name": {
+            "type": "string",
+            "description": "The name of the specific sheet within the spreadsheet.",
+            "title": "Sheet Name",
+            "examples": [
+              "Sheet1",
+              "Sales Data"
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Sheets spreadsheet.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            ]
+          },
+          "target_column": {
+            "type": "string",
+            "description": "The column to aggregate data from. Can be a letter (e.g., 'C', 'D') or column name from header row (e.g., 'Sales', 'Revenue').",
+            "title": "Target Column",
+            "examples": [
+              "D",
+              "Sales",
+              "Revenue"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "sheet_name",
+          "search_column",
+          "search_value",
+          "target_column",
+          "operation"
+        ],
+        "title": "AggregateColumnDataRequest",
+        "description": "Request to search for rows matching a column value and aggregate data from another column."
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_APPEND_DIMENSION",
+      "description": "Tool to append new rows or columns to a sheet, increasing its size. Use when you need to add empty rows or columns to an existing sheet.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "dimension": {
+            "type": "string",
+            "description": "Specifies whether to append rows or columns.",
+            "title": "Dimension",
+            "enum": [
+              "ROWS",
+              "COLUMNS"
+            ],
+            "examples": [
+              "ROWS"
+            ]
+          },
+          "length": {
+            "type": "integer",
+            "description": "The number of rows or columns to append.",
+            "title": "Length",
+            "examples": [
+              10
+            ]
+          },
+          "sheet_id": {
+            "type": "integer",
+            "description": "The ID of the sheet to append rows or columns to.",
+            "title": "Sheet Id",
+            "examples": [
+              0
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The ID of the spreadsheet.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1q2w3e4r5t6y7u8i9o0p"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "sheet_id",
+          "dimension",
+          "length"
+        ],
+        "title": "AppendDimensionRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_BATCH_GET",
+      "description": "Retrieves data from specified cell ranges in a Google Spreadsheet.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "dateTimeRenderOption": {
+            "type": "string",
+            "description": "How dates and times should be rendered in the output. SERIAL_NUMBER: Dates are returned as serial numbers (default). FORMATTED_STRING: Dates returned as formatted strings.",
+            "title": "Date Time Render Option",
+            "default": "SERIAL_NUMBER",
+            "enum": [
+              "SERIAL_NUMBER",
+              "FORMATTED_STRING"
+            ]
+          },
+          "ranges": {
+            "type": "array",
+            "description": "A list of cell ranges in A1 notation (e.g., 'Sheet1!A1:B2', 'A1:C5') from which to retrieve data. If this list is omitted or empty, all data from the first sheet of the spreadsheet will be fetched. A range can specify a sheet name (e.g., 'Sheet2!A:A'); if no sheet name is provided in a range string (e.g., 'A1:B2'), it defaults to the first sheet. For sheet names with spaces or special characters, enclose in single quotes (e.g., \"'My Sheet'!A1:B2\").",
+            "title": "Ranges",
+            "items": {
+              "type": "string",
+              "properties": {}
+            },
+            "examples": [
+              "Sheet1!A1:B2",
+              "Sheet1!A:A",
+              "Sheet1!1:2",
+              "'My Sheet'!A5:A",
+              "A1:B2"
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Spreadsheet from which data will be retrieved. This is the ID found in the spreadsheet URL after /d/.",
+            "title": "Spreadsheet Id",
+            "maxLength": 100,
+            "examples": [
+              "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            ]
+          },
+          "valueRenderOption": {
+            "type": "string",
+            "description": "How values should be rendered in the output. FORMATTED_VALUE: Values are calculated and formatted (default). UNFORMATTED_VALUE: Values are calculated but not formatted. FORMULA: Values are not calculated; the formula is returned instead.",
+            "title": "Value Render Option",
+            "default": "FORMATTED_VALUE",
+            "enum": [
+              "FORMATTED_VALUE",
+              "UNFORMATTED_VALUE",
+              "FORMULA"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id"
+        ],
+        "title": "BatchGetRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_BATCH_UPDATE",
+      "description": "Updates a specified range in a Google Sheet with given values, or appends them as new rows if `first_cell_location` is omitted. Auto-expands grid for large datasets, preventing range errors. Requirements: Target sheet must exist and spreadsheet must contain at least one worksheet.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "first_cell_location": {
+            "type": "string",
+            "description": "The starting cell for the update range, specified in A1 notation (e.g., 'A1', 'B2'). The update will extend from this cell to the right and down, based on the provided values. If omitted, values are appended to the sheet.",
+            "title": "First Cell Location",
+            "examples": [
+              "A1",
+              "D3"
+            ]
+          },
+          "includeValuesInResponse": {
+            "type": "boolean",
+            "description": "If set to True, the response will include the updated values from the spreadsheet after the update is applied.",
+            "title": "Include Values In Response",
+            "default": false,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "sheet_name": {
+            "type": "string",
+            "description": "The name of the specific sheet (tab) within the spreadsheet to update. Case-sensitive.",
+            "title": "Sheet Name",
+            "examples": [
+              "Sheet1",
+              "Sales Data",
+              "Budget"
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Sheets spreadsheet to be updated. Can be found in the spreadsheet URL.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            ]
+          },
+          "valueInputOption": {
+            "type": "string",
+            "description": "How input data should be interpreted. 'USER_ENTERED': Values are parsed as if typed by a user (e.g., strings may become numbers/dates, formulas are calculated). 'RAW': Values are stored exactly as provided without parsing (e.g., '123' stays as string, '=SUM(A1:B1)' is not calculated).",
+            "title": "Value Input Option",
+            "default": "USER_ENTERED",
+            "enum": [
+              "RAW",
+              "USER_ENTERED"
+            ],
+            "examples": [
+              "USER_ENTERED",
+              "RAW"
+            ]
+          },
+          "values": {
+            "type": "array",
+            "description": "A 2D array of cell values where each inner array represents a row. Values can be strings, numbers, booleans, or None/null for empty cells. Ensure columns are properly aligned across rows.",
+            "title": "Values",
+            "items": {
+              "type": "array",
+              "properties": {},
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "examples": [
+              [
+                [
+                  "Item",
+                  "Cost",
+                  "Stocked",
+                  "Ship Date"
+                ],
+                [
+                  "Wheel",
+                  20.5,
+                  true,
+                  "2020-06-01"
+                ],
+                [
+                  "Screw",
+                  0.5,
+                  true,
+                  "2020-06-03"
+                ],
+                [
+                  "Nut",
+                  0.25,
+                  false,
+                  "2020-06-02"
+                ]
+              ]
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "sheet_name",
+          "values"
+        ],
+        "title": "BatchUpdateRequest",
+        "description": "Request to update a range of cells or append new rows in a Google Sheet with specified values."
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_BATCH_UPDATE_VALUES_BY_DATA_FILTER",
+      "description": "Tool to update values in ranges matching data filters. Use when you need to update specific data in a Google Sheet based on criteria rather than fixed cell ranges.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "The new values to apply to the spreadsheet. If more than one range is matched by the specified DataFilter the specified values are applied to all of those ranges.",
+            "title": "Data",
+            "items": {
+              "type": "object",
+              "title": "DataFilterValueRange",
+              "properties": {
+                "dataFilter": {
+                  "type": "object",
+                  "description": "The data filter describing the criteria to select cells for update.",
+                  "title": "Data Filter",
+                  "properties": {
+                    "a1Range": {
+                      "type": "string",
+                      "description": "The A1 notation of the range to update.",
+                      "title": "A1 Range",
+                      "default": null,
+                      "nullable": true
+                    },
+                    "developerMetadataLookup": {
+                      "type": "object",
+                      "description": "Matches the data against the developer metadata that's associated with the dimensions. The developer metadata should be created with the location type set to either ROW or COLUMN and the visibility set to DOCUMENT.",
+                      "title": "DeveloperMetadataLookup",
+                      "default": null,
+                      "nullable": true,
+                      "properties": {
+                        "locationMatchingStrategy": {
+                          "type": "string",
+                          "description": "Determines how this lookup matches the location. If this field is specified as EXACT, then the lookup requires an exact match of the specified locationType, metadataKey, and metadataValue. If this field is specified as INTERSECTING, then the lookup considers all metadata that intersects the specified locationType, and then filters that metadata by the specified key and value. If this field is unspecified, it is treated as EXACT.",
+                          "title": "Location Matching Strategy",
+                          "default": null,
+                          "nullable": true,
+                          "enum": [
+                            "EXACT",
+                            "INTERSECTING"
+                          ]
+                        },
+                        "locationType": {
+                          "type": "string",
+                          "description": "The type of location this object is looking for. Valid values are ROW, COLUMN, and SHEET.",
+                          "title": "Location Type",
+                          "default": null,
+                          "nullable": true,
+                          "enum": [
+                            "ROW",
+                            "COLUMN",
+                            "SHEET"
+                          ]
+                        },
+                        "metadataId": {
+                          "type": "integer",
+                          "description": "The ID of the developer metadata to match. This field is optional. If specified, the lookup matches only the developer metadata with the specified ID.",
+                          "title": "Metadata Id",
+                          "default": null,
+                          "nullable": true
+                        },
+                        "metadataKey": {
+                          "type": "string",
+                          "description": "The key of the developer metadata to match. This field is optional. If specified, the lookup matches only the developer metadata with the specified key.",
+                          "title": "Metadata Key",
+                          "default": null,
+                          "nullable": true
+                        },
+                        "metadataLocation": {
+                          "type": "object",
+                          "description": "The location of the developer metadata to match. This field is optional. If specified, the lookup matches only the developer metadata in the specified location.",
+                          "title": "DeveloperMetadataLocation",
+                          "default": null,
+                          "nullable": true,
+                          "properties": {
+                            "dimensionRange": {
+                              "type": "object",
+                              "description": "A range along a single dimension on a sheet. All indexes are 0-based. Indexes are half open: the start index is inclusive and the end index is exclusive. Missing indexes indicate the range is unbounded on that side.",
+                              "title": "Dimension Range",
+                              "default": null,
+                              "nullable": true,
+                              "additionalProperties": true
+                            },
+                            "locationType": {
+                              "type": "string",
+                              "description": "The type of location this object represents. This field is read-only.",
+                              "title": "Location Type",
+                              "default": null,
+                              "nullable": true
+                            },
+                            "sheetId": {
+                              "type": "integer",
+                              "description": "The ID of the sheet the location is on.",
+                              "title": "Sheet Id",
+                              "default": null,
+                              "nullable": true
+                            },
+                            "spreadsheet": {
+                              "type": "boolean",
+                              "description": "True if the metadata location is the spreadsheet itself.",
+                              "title": "Spreadsheet",
+                              "default": null,
+                              "nullable": true
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "metadataValue": {
+                          "type": "string",
+                          "description": "The value of the developer metadata to match. This field is optional. If specified, the lookup matches only the developer metadata with the specified value.",
+                          "title": "Metadata Value",
+                          "default": null,
+                          "nullable": true
+                        },
+                        "visibility": {
+                          "type": "string",
+                          "description": "The visibility of the developer metadata to match. This field is optional. If specified, the lookup matches only the developer metadata with the specified visibility.",
+                          "title": "Visibility",
+                          "default": null,
+                          "nullable": true
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "gridRange": {
+                      "type": "object",
+                      "description": "Selects data within the range described by a GridRange. This field is optional. If specified, the dataFilter selects data within the specified grid range.",
+                      "title": "GridRange",
+                      "default": null,
+                      "nullable": true,
+                      "properties": {
+                        "endColumnIndex": {
+                          "type": "integer",
+                          "description": "The end column (exclusive) of the range, or not set if unbounded.",
+                          "title": "End Column Index",
+                          "default": null,
+                          "nullable": true
+                        },
+                        "endRowIndex": {
+                          "type": "integer",
+                          "description": "The end row (exclusive) of the range, or not set if unbounded.",
+                          "title": "End Row Index",
+                          "default": null,
+                          "nullable": true
+                        },
+                        "sheetId": {
+                          "type": "integer",
+                          "description": "The sheet this range is on.",
+                          "title": "Sheet Id",
+                          "default": null,
+                          "nullable": true
+                        },
+                        "startColumnIndex": {
+                          "type": "integer",
+                          "description": "The start column (inclusive) of the range, or not set if unbounded.",
+                          "title": "Start Column Index",
+                          "default": null,
+                          "nullable": true
+                        },
+                        "startRowIndex": {
+                          "type": "integer",
+                          "description": "The start row (inclusive) of the range, or not set if unbounded.",
+                          "title": "Start Row Index",
+                          "default": null,
+                          "nullable": true
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "majorDimension": {
+                  "type": "string",
+                  "description": "The major dimension of the values. The default value is ROWS.",
+                  "title": "Major Dimension",
+                  "default": "ROWS",
+                  "nullable": true,
+                  "enum": [
+                    "ROWS",
+                    "COLUMNS",
+                    "DIMENSION_UNSPECIFIED"
+                  ]
+                },
+                "values": {
+                  "type": "array",
+                  "description": "The data to be written. A two-dimensional array of values that will be written to the range. Values can be strings, numbers, or booleans. If the range is larger than the values array, the excess cells will not be changed. If the values array is larger than the range, the excess values will be ignored.",
+                  "title": "Values",
+                  "items": {
+                    "type": "array",
+                    "properties": {},
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "required": [
+                "dataFilter",
+                "values"
+              ]
+            }
+          },
+          "includeValuesInResponse": {
+            "type": "boolean",
+            "description": "Determines if the update response should include the values of the cells that were updated. By default, responses do not include the updated values.",
+            "title": "Include Values In Response",
+            "default": false,
+            "nullable": true
+          },
+          "responseDateTimeRenderOption": {
+            "type": "string",
+            "description": "Determines how dates, times, and durations in the response should be rendered. This is ignored if responseValueRenderOption is FORMATTED_VALUE. The default dateTime render option is SERIAL_NUMBER.",
+            "title": "Response Date Time Render Option",
+            "default": "SERIAL_NUMBER",
+            "nullable": true,
+            "enum": [
+              "SERIAL_NUMBER",
+              "FORMATTED_STRING"
+            ]
+          },
+          "responseValueRenderOption": {
+            "type": "string",
+            "description": "Determines how values in the response should be rendered. The default render option is FORMATTED_VALUE.",
+            "title": "Response Value Render Option",
+            "default": "FORMATTED_VALUE",
+            "nullable": true,
+            "enum": [
+              "FORMATTED_VALUE",
+              "UNFORMATTED_VALUE",
+              "FORMULA"
+            ]
+          },
+          "spreadsheetId": {
+            "type": "string",
+            "description": "The ID of the spreadsheet to update.",
+            "title": "Spreadsheet Id"
+          },
+          "valueInputOption": {
+            "type": "string",
+            "description": "How the input data should be interpreted.",
+            "title": "Value Input Option",
+            "enum": [
+              "RAW",
+              "USER_ENTERED"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheetId",
+          "data",
+          "valueInputOption"
+        ],
+        "title": "BatchUpdateValuesByDataFilterRequestModel"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_CLEAR_BASIC_FILTER",
+      "description": "Tool to clear the basic filter from a sheet. Use when you need to remove an existing basic filter from a specific sheet within a Google Spreadsheet.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "sheet_id": {
+            "type": "integer",
+            "description": "The ID of the sheet on which the basic filter should be cleared.",
+            "title": "Sheet Id",
+            "examples": [
+              0,
+              123456789
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The ID of the spreadsheet.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "abc123xyz789"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "sheet_id"
+        ],
+        "title": "ClearBasicFilterRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_CLEAR_VALUES",
+      "description": "Clears cell content (preserving formatting and notes) from a specified A1 notation range in a Google Spreadsheet; the range must correspond to an existing sheet and cells.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "range": {
+            "type": "string",
+            "description": "The A1 notation of the range to clear values from (e.g., 'Sheet1!A1:B2', 'MySheet!C:C', or 'A1:D5'). If the sheet name is omitted (e.g., 'A1:B2'), the operation applies to the first visible sheet.",
+            "title": "Range",
+            "examples": [
+              "Sheet1!A1:B10",
+              "Sheet2!C:D",
+              "A1:Z100",
+              "My Custom Sheet!B3:F10"
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Spreadsheet from which to clear values. This ID can be found in the URL of the spreadsheet.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1qZ_g6N0g3Z0s5hJ2xQ8vP9r7T_u6X3iY2o0kE_l5N7M",
+              "spreαdsheetId_from_url"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "range"
+        ],
+        "title": "ClearValuesRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_CREATE_CHART",
+      "description": "Create a chart in a Google Sheets spreadsheet using the specified data range and chart type. Conditional requirements: - Provide either a simple chart via chart_type + data_range (basicChart), OR supply a full chart_spec supporting all chart types. Exactly one approach should be used. - When using chart_spec, set exactly one of the union fields (basicChart | pieChart | bubbleChart | candlestickChart | histogramChart | waterfallChart | treemapChart | orgChart | scorecardChart).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "background_blue": {
+            "type": "number",
+            "description": "Blue component of chart background color (0.0-1.0). If not specified, uses default.",
+            "title": "Background Blue",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              0,
+              0.5,
+              1
+            ]
+          },
+          "background_green": {
+            "type": "number",
+            "description": "Green component of chart background color (0.0-1.0). If not specified, uses default.",
+            "title": "Background Green",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              0,
+              0.5,
+              1
+            ]
+          },
+          "background_red": {
+            "type": "number",
+            "description": "Red component of chart background color (0.0-1.0). If not specified, uses default.",
+            "title": "Background Red",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              0,
+              0.5,
+              1
+            ]
+          },
+          "chart_spec": {
+            "type": "object",
+            "description": "Optional full ChartSpec object to send to the Google Sheets API. Use this to support ALL chart types and advanced options. Must set exactly one of: basicChart, pieChart, bubbleChart, candlestickChart, histogramChart, treemapChart, waterfallChart, orgChart, scorecardChart. See https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/charts#ChartSpec.",
+            "title": "Chart Spec",
+            "default": null,
+            "nullable": true,
+            "additionalProperties": true,
+            "examples": [
+              {
+                "pieChart": {
+                  "domain": {
+                    "sourceRange": {
+                      "sources": [
+                        {
+                          "endColumnIndex": 1,
+                          "endRowIndex": 5,
+                          "sheetId": 0,
+                          "startColumnIndex": 0,
+                          "startRowIndex": 0
+                        }
+                      ]
+                    }
+                  },
+                  "legendPosition": "RIGHT_LEGEND",
+                  "series": {
+                    "sourceRange": {
+                      "sources": [
+                        {
+                          "endColumnIndex": 2,
+                          "endRowIndex": 5,
+                          "sheetId": 0,
+                          "startColumnIndex": 1,
+                          "startRowIndex": 0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "chart_type": {
+            "type": "string",
+            "description": "The type of chart to create. Supported types: BAR, LINE, AREA, COLUMN, SCATTER, COMBO, STEPPED_AREA (basic charts), PIE, BUBBLE, CANDLESTICK, HISTOGRAM, TREEMAP, WATERFALL, ORG, SCORECARD. If you need full control over the chart specification (including fields not covered by simple inputs), provide chart_spec instead.",
+            "title": "Chart Type",
+            "examples": [
+              "COLUMN",
+              "LINE",
+              "BAR",
+              "AREA",
+              "PIE",
+              "HISTOGRAM",
+              "WATERFALL"
+            ]
+          },
+          "data_range": {
+            "type": "string",
+            "description": "A single contiguous range of data for the chart in A1 notation (e.g., 'A1:C10' or 'Sheet1!B2:D20'). Must be a single continuous range - comma-separated multi-ranges (e.g., 'A1:A10,C1:C10') are not supported. When chart_spec is not provided, the first column is used as the domain/labels and the remaining columns as series.",
+            "title": "Data Range",
+            "examples": [
+              "A1:C10",
+              "Sheet1!B2:D20",
+              "Data!A1:E50"
+            ]
+          },
+          "legend_position": {
+            "type": "string",
+            "description": "Position of the chart legend. Options: BOTTOM_LEGEND, TOP_LEGEND, LEFT_LEGEND, RIGHT_LEGEND, NO_LEGEND.",
+            "title": "Legend Position",
+            "default": "BOTTOM_LEGEND",
+            "examples": [
+              "BOTTOM_LEGEND",
+              "RIGHT_LEGEND",
+              "NO_LEGEND"
+            ]
+          },
+          "sheet_id": {
+            "type": "integer",
+            "description": "The sheetId of the worksheet where the chart will be created. This is a unique non-zero integer identifier. Use 'Get Sheet Names' or 'Get Spreadsheet Info' actions to retrieve the sheetId for your target worksheet.",
+            "title": "Sheet Id",
+            "examples": [
+              123456789,
+              987654321
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Sheets spreadsheet where the chart will be created.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            ]
+          },
+          "subtitle": {
+            "type": "string",
+            "description": "Optional subtitle for the chart.",
+            "title": "Subtitle",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              "Q1 2024",
+              "Year over Year"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "description": "Optional title for the chart.",
+            "title": "Title",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              "Sales Data",
+              "Monthly Revenue"
+            ]
+          },
+          "x_axis_title": {
+            "type": "string",
+            "description": "Optional title for the X-axis.",
+            "title": "X Axis Title",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              "Time Period",
+              "Categories"
+            ]
+          },
+          "y_axis_title": {
+            "type": "string",
+            "description": "Optional title for the Y-axis.",
+            "title": "Y Axis Title",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              "Revenue ($)",
+              "Count"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "sheet_id",
+          "chart_type",
+          "data_range"
+        ],
+        "title": "CreateChartRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_CREATE_GOOGLE_SHEET1",
+      "description": "Creates a new Google Spreadsheet in Google Drive using the provided title.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title for the new Google Sheet. This will be the name of the file in Google Drive.",
+            "title": "Title",
+            "examples": [
+              "Q4 Financial Report",
+              "Project Plan Ideas",
+              "Meeting Notes"
+            ]
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "CreateGoogleSheetRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_CREATE_SPREADSHEET_COLUMN",
+      "description": "Creates a new column in a Google Spreadsheet, requiring a valid `spreadsheet_id` and an existing `sheet_id`; an out-of-bounds `insert_index` may append/prepend the column.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "inherit_from_before": {
+            "type": "boolean",
+            "description": "If true, the new column inherits properties (e.g., formatting, width) from the column immediately to its left (the preceding column). If false (default), it inherits from the column immediately to its right (the succeeding column). This is ignored if there is no respective preceding or succeeding column.",
+            "title": "Inherit From Before",
+            "default": false,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "insert_index": {
+            "type": "integer",
+            "description": "The 0-based index at which the new column will be inserted. For example, an index of 0 inserts the column before the current first column (A), and an index of 1 inserts it between the current columns A and B.",
+            "title": "Insert Index",
+            "default": 0,
+            "examples": [
+              "0",
+              "1",
+              "5"
+            ]
+          },
+          "sheet_id": {
+            "type": "integer",
+            "description": "The numeric identifier of the specific sheet (tab) within the spreadsheet where the column will be added.",
+            "title": "Sheet Id",
+            "examples": [
+              "0",
+              "123456789"
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Spreadsheet where the column will be created.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1qZysYd_N2cZ9gkZ8sR7M0rP8sX5vW2bA9gV3rF1cE0"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "sheet_id"
+        ],
+        "title": "CreateSpreadsheetColumnRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_CREATE_SPREADSHEET_ROW",
+      "description": "Inserts a new, empty row into a specified sheet of a Google Spreadsheet at a given index, optionally inheriting formatting from the row above.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "inherit_from_before": {
+            "type": "boolean",
+            "description": "If True, the newly inserted row will inherit formatting and properties from the row immediately preceding its insertion point. If False, it will have default formatting.",
+            "title": "Inherit From Before",
+            "default": false,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "insert_index": {
+            "type": "integer",
+            "description": "The 0-based index at which the new row should be inserted. For example, an index of 0 inserts the row at the beginning of the sheet. If the index is greater than the current number of rows, the row is appended.",
+            "title": "Insert Index",
+            "default": 0,
+            "examples": [
+              0,
+              5,
+              100
+            ]
+          },
+          "sheet_id": {
+            "type": "integer",
+            "description": "The numeric identifier of the sheet (tab) within the spreadsheet where the row will be inserted. This ID (gid) is found in the URL of the spreadsheet (e.g., '0' for the first sheet).",
+            "title": "Sheet Id",
+            "examples": [
+              0,
+              123456789
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Spreadsheet. This ID is found in the URL of the spreadsheet (e.g., '1qpyC0XzHc_-_d824s2VfopkHh7D0jW4aXCS1D_AlGA').",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1qpyC0XzHc_-_d824s2VfopkHh7D0jW4aXCS1D_AlGA"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "sheet_id"
+        ],
+        "title": "CreateSpreadsheetRowRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_DELETE_DIMENSION",
+      "description": "Tool to delete specified rows or columns from a sheet in a Google Spreadsheet. Use when you need to remove a range of rows or columns.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "delete_dimension_request": {
+            "type": "object",
+            "description": "The details for the delete dimension request object.",
+            "title": "Delete Dimension Request",
+            "properties": {
+              "range": {
+                "type": "object",
+                "description": "The range of the dimension to delete.",
+                "title": "Range",
+                "properties": {
+                  "dimension": {
+                    "type": "string",
+                    "description": "The dimension to delete.",
+                    "title": "Dimension",
+                    "enum": [
+                      "ROWS",
+                      "COLUMNS"
+                    ],
+                    "examples": [
+                      "ROWS",
+                      "COLUMNS"
+                    ]
+                  },
+                  "end_index": {
+                    "type": "integer",
+                    "description": "The zero-based end index of the range to delete, exclusive. The end index must be greater than the start index.",
+                    "title": "End Index",
+                    "exclusiveMinimum": 0,
+                    "examples": [
+                      1,
+                      10
+                    ]
+                  },
+                  "sheet_id": {
+                    "type": "integer",
+                    "description": "The ID of the sheet from which to delete the dimension.",
+                    "title": "Sheet Id",
+                    "examples": [
+                      0,
+                      123456789
+                    ]
+                  },
+                  "start_index": {
+                    "type": "integer",
+                    "description": "The zero-based start index of the range to delete, inclusive. The start index must be less than the end index.",
+                    "title": "Start Index",
+                    "minimum": 0,
+                    "examples": [
+                      0,
+                      5
+                    ]
+                  }
+                },
+                "required": [
+                  "sheet_id",
+                  "dimension",
+                  "start_index",
+                  "end_index"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "range"
+            ],
+            "additionalProperties": false
+          },
+          "include_spreadsheet_in_response": {
+            "type": "boolean",
+            "description": "Determines if the update response should include the spreadsheet resource.",
+            "title": "Include Spreadsheet In Response",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "response_include_grid_data": {
+            "type": "boolean",
+            "description": "True if grid data should be returned. This parameter is ignored if a field mask was set in the request.",
+            "title": "Response Include Grid Data",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "response_ranges": {
+            "type": "array",
+            "description": "Limits the ranges of cells included in the response spreadsheet.",
+            "title": "Response Ranges",
+            "default": null,
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "properties": {}
+            },
+            "examples": [
+              [
+                "Sheet1!A1:B2",
+                "Sheet2!C:C"
+              ]
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The ID of the spreadsheet.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "abc123xyz789"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "delete_dimension_request"
+        ],
+        "title": "DeleteDimensionRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_DELETE_SHEET",
+      "description": "Tool to delete a sheet (worksheet) from a spreadsheet. Use when you need to remove a specific sheet from a Google Sheet document.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "sheet_id": {
+            "type": "integer",
+            "description": "The ID of the sheet to delete. If the sheet is of DATA_SOURCE type, the associated DataSource is also deleted.",
+            "title": "Sheet Id",
+            "examples": [
+              123456789
+            ]
+          },
+          "spreadsheetId": {
+            "type": "string",
+            "description": "The ID of the spreadsheet from which to delete the sheet.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "abc123xyz789"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheetId",
+          "sheet_id"
+        ],
+        "title": "DeleteSheetRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_EXECUTE_SQL",
+      "description": "Execute SQL queries against Google Sheets tables. Supports SELECT, INSERT, UPDATE, and DELETE operations with familiar SQL syntax. Tables are automatically detected and mapped from the spreadsheet structure.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "delete_method": {
+            "type": "string",
+            "description": "For DELETE operations: 'clear' preserves row structure, 'remove_rows' shifts data up",
+            "title": "Delete Method",
+            "default": "clear",
+            "enum": [
+              "clear",
+              "remove_rows"
+            ]
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "Preview changes without applying them (for write operations)",
+            "title": "Dry Run",
+            "default": false
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "Google Sheets ID",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            ]
+          },
+          "sql": {
+            "type": "string",
+            "description": "SQL query to execute. Supports SELECT, INSERT, UPDATE, DELETE operations.",
+            "title": "Sql",
+            "examples": [
+              "SELECT * FROM \"Sales_Data\" LIMIT 10",
+              "INSERT INTO \"Customers\" (name, email) VALUES ('John Doe', 'john@example.com')",
+              "UPDATE \"Inventory\" SET quantity = quantity - 10 WHERE sku = 'ABC123'",
+              "DELETE FROM \"Old_Data\" WHERE date < '2023-01-01'"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "sql"
+        ],
+        "title": "ExecuteSqlRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_FIND_REPLACE",
+      "description": "Tool to find and replace text in a Google Spreadsheet. Use when you need to fix formula errors, update values, or perform bulk text replacements across cells. Common use cases: - Fix #ERROR! cells by replacing with empty string or correct formula - Update old values with new ones across multiple cells - Fix formula references or patterns - Clean up data formatting issues",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "allSheets": {
+            "type": "boolean",
+            "description": "Whether to search across all sheets in the spreadsheet.",
+            "title": "All Sheets",
+            "default": false,
+            "nullable": true,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "find": {
+            "type": "string",
+            "description": "The text to find. Can be a literal string or a regular expression pattern.",
+            "title": "Find",
+            "examples": [
+              "#ERROR!",
+              "=SUM(A1:A10)",
+              "old_value"
+            ]
+          },
+          "matchCase": {
+            "type": "boolean",
+            "description": "Whether the search should be case-sensitive.",
+            "title": "Match Case",
+            "default": false,
+            "nullable": true,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "matchEntireCell": {
+            "type": "boolean",
+            "description": "Whether to match only cells that contain the entire search term.",
+            "title": "Match Entire Cell",
+            "default": false,
+            "nullable": true,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "range": {
+            "type": "string",
+            "description": "The A1 notation range to search in. If not specified, searches the entire sheet(s).",
+            "title": "Range",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              "A1:Z100",
+              "Sheet1!A:C",
+              "B2:D10"
+            ]
+          },
+          "replacement": {
+            "type": "string",
+            "description": "The text to replace the found instances with.",
+            "title": "Replacement",
+            "examples": [
+              "",
+              "=SUM(A1:A5)",
+              "new_value"
+            ]
+          },
+          "searchByRegex": {
+            "type": "boolean",
+            "description": "Whether to treat the find text as a regular expression.",
+            "title": "Search By Regex",
+            "default": false,
+            "nullable": true,
+            "examples": [
+              true,
+              false
+            ]
+          },
+          "sheetId": {
+            "type": "integer",
+            "description": "The ID of the sheet to search in. If not specified, searches all sheets.",
+            "title": "Sheet Id",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              0,
+              123456789
+            ]
+          },
+          "spreadsheetId": {
+            "type": "string",
+            "description": "The ID of the spreadsheet to update.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheetId",
+          "find",
+          "replacement"
+        ],
+        "title": "FindReplaceRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_FIND_WORKSHEET_BY_TITLE",
+      "description": "Finds a worksheet by its exact, case-sensitive title within a Google Spreadsheet; returns a boolean indicating if found and the complete metadata of the entire spreadsheet, regardless of whether the target worksheet is found.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Spreadsheet. This ID is part of the spreadsheet's URL.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789_drivE",
+              "your_actual_spreadsheet_id"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "description": "The exact, case-sensitive title of the worksheet (tab name) to find.",
+            "title": "Title",
+            "examples": [
+              "Sheet1",
+              "Q3 Report",
+              "Customer Data"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "title"
+        ],
+        "title": "FindWorksheetByTitleRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_FORMAT_CELL",
+      "description": "Applies text and background cell formatting to a specified range in a Google Sheets worksheet.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "blue": {
+            "type": "number",
+            "description": "Blue component of the background color (0.0-1.0).",
+            "title": "Blue",
+            "default": 0.9,
+            "examples": [
+              "0.0",
+              "0.5",
+              "1.0"
+            ]
+          },
+          "bold": {
+            "type": "boolean",
+            "description": "Apply bold formatting.",
+            "title": "Bold",
+            "default": false,
+            "examples": [
+              "true",
+              "false"
+            ]
+          },
+          "end_column_index": {
+            "type": "integer",
+            "description": "OPTION 2: 0-based index of the column AFTER the last column (exclusive). Required if 'range' is not provided. Must provide ALL four index fields together.",
+            "title": "End Column Index",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              1,
+              2,
+              6
+            ]
+          },
+          "end_row_index": {
+            "type": "integer",
+            "description": "OPTION 2: 0-based index of the row AFTER the last row (exclusive). Required if 'range' is not provided. Must provide ALL four index fields together.",
+            "title": "End Row Index",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              1,
+              9
+            ]
+          },
+          "fontSize": {
+            "type": "integer",
+            "description": "Font size in points.",
+            "title": "Font Size",
+            "default": 10,
+            "examples": [
+              "10",
+              "12",
+              "14"
+            ]
+          },
+          "green": {
+            "type": "number",
+            "description": "Green component of the background color (0.0-1.0).",
+            "title": "Green",
+            "default": 0.9,
+            "examples": [
+              "0.0",
+              "0.5",
+              "1.0"
+            ]
+          },
+          "italic": {
+            "type": "boolean",
+            "description": "Apply italic formatting.",
+            "title": "Italic",
+            "default": false,
+            "examples": [
+              "true",
+              "false"
+            ]
+          },
+          "range": {
+            "type": "string",
+            "description": "OPTION 1: Cell range in A1 notation (RECOMMENDED). Examples: 'A1' (single cell), 'F9' (cell F9), 'A1:B5' (range). Provide EITHER this field OR all four index fields below, not both.",
+            "title": "Range",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              "A1",
+              "F9",
+              "B2:D4",
+              "C1:C10"
+            ]
+          },
+          "red": {
+            "type": "number",
+            "description": "Red component of the background color (0.0-1.0).",
+            "title": "Red",
+            "default": 0.9,
+            "examples": [
+              "0.0",
+              "0.5",
+              "1.0"
+            ]
+          },
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "Identifier of the Google Sheets spreadsheet.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+            ]
+          },
+          "start_column_index": {
+            "type": "integer",
+            "description": "OPTION 2: 0-based column index (A = 0, B = 1, F = 5). Required if 'range' is not provided. Must provide ALL four index fields together.",
+            "title": "Start Column Index",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              0,
+              1,
+              5
+            ]
+          },
+          "start_row_index": {
+            "type": "integer",
+            "description": "OPTION 2: 0-based row index (row 1 = index 0, row 9 = index 8). Required if 'range' is not provided. Must provide ALL four index fields together.",
+            "title": "Start Row Index",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              0,
+              8
+            ]
+          },
+          "strikethrough": {
+            "type": "boolean",
+            "description": "Apply strikethrough formatting.",
+            "title": "Strikethrough",
+            "default": false,
+            "examples": [
+              "true",
+              "false"
+            ]
+          },
+          "underline": {
+            "type": "boolean",
+            "description": "Apply underline formatting.",
+            "title": "Underline",
+            "default": false,
+            "examples": [
+              "true",
+              "false"
+            ]
+          },
+          "worksheet_id": {
+            "type": "integer",
+            "description": "ID (sheetId) of the worksheet. Use `GOOGLESHEETS_GET_SPREADSHEET_INFO` to find this ID.",
+            "title": "Worksheet Id",
+            "examples": [
+              "123456789"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id",
+          "worksheet_id"
+        ],
+        "title": "FormatCellRequest",
+        "description": "Parameters for applying formatting to a cell range in a Google Sheet.\n\nIMPORTANT: Specify the cell range in ONE of two ways:\n1. Use 'range' field with A1 notation (RECOMMENDED): \"F9\", \"A1:B5\"\n2. Use all four index fields manually: start_row_index, start_column_index, end_row_index, end_column_index\n\nDo NOT provide both - the validator will reject mixed input."
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_GET_SHEET_NAMES",
+      "description": "Lists all worksheet names from a specified Google Spreadsheet (which must exist), useful for discovering sheets before further operations.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "spreadsheet_id": {
+            "type": "string",
+            "description": "The unique identifier of the Google Spreadsheet. This ID is typically found in the spreadsheet's URL.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "1qpyC0XzvTcKT6EISywY_7H7D7No1tpxEXAMPLE_ID"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheet_id"
+        ],
+        "title": "GetSheetNamesRequest"
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "GOOGLESHEETS_GET_SPREADSHEET_BY_DATA_FILTER",
+      "description": "Returns the spreadsheet at the given ID, filtered by the specified data filters. Use this tool when you need to retrieve specific subsets of data from a Google Sheet based on criteria like A1 notation, developer metadata, or grid ranges.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "dataFilters": {
+            "type": "array",
+            "description": "The DataFilters used to select which ranges to retrieve.",
+            "title": "Data Filters",
+            "items": {
+              "type": "object",
+              "title": "DataFilter",
+              "properties": {
+                "a1Range": {
+                  "type": "string",
+                  "description": "Selects data that matches the specified A1 range.",
+                  "title": "A1 Range",
+                  "default": null,
+                  "nullable": true,
+                  "examples": [
+                    "Sheet1!A1:B2"
+                  ]
+                },
+                "developerMetadataLookup": {
+                  "type": "object",
+                  "description": "Selects data associated with developer metadata.",
+                  "title": "DeveloperMetadataLookup",
+                  "default": null,
+                  "nullable": true,
+                  "properties": {
+                    "locationType": {
+                      "type": "string",
+                      "description": "Location type of metadata.",
+                      "title": "DeveloperMetadataLookupLocationType",
+                      "default": null,
+                      "nullable": true,
+                      "enum": [
+                        "ROW",
+                        "COLUMN",
+                        "SHEET",
+                        "SPREADSHEET",
+                        "OBJECT"
+                      ]
+                    },
+                    "metadataId": {
+                      "type": "integer",
+                      "description": "Filter by metadata ID.",
+                      "title": "Metadata Id",
+                      "default": null,
+                      "nullable": true,
+                      "examples": [
+                        123
+                      ]
+                    },
+                    "metadataKey": {
+                      "type": "string",
+                      "description": "Filter by metadata key.",
+                      "title": "Metadata Key",
+                      "default": null,
+                      "nullable": true,
+                      "examples": [
+                        "project_id"
+                      ]
+                    },
+                    "metadataValue": {
+                      "type": "string",
+                      "description": "Filter by metadata value.",
+                      "title": "Metadata Value",
+                      "default": null,
+                      "nullable": true,
+                      "examples": [
+                        "alpha"
+                      ]
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "description": "Metadata visibility.",
+                      "title": "DeveloperMetadataLookupVisibility",
+                      "default": null,
+                      "nullable": true,
+                      "enum": [
+                        "DOCUMENT",
+                        "PROJECT"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "gridRange": {
+                  "type": "object",
+                  "description": "Selects data that matches the range described by the GridRange.",
+                  "title": "GridRange",
+                  "default": null,
+                  "nullable": true,
+                  "properties": {
+                    "endColumnIndex": {
+                      "type": "integer",
+                      "description": "The end column (0-based, exclusive) of the range.",
+                      "title": "End Column Index",
+                      "default": null,
+                      "nullable": true,
+                      "exclusiveMinimum": 0,
+                      "examples": [
+                        5
+                      ]
+                    },
+                    "endRowIndex": {
+                      "type": "integer",
+                      "description": "The end row (0-based, exclusive) of the range.",
+                      "title": "End Row Index",
+                      "default": null,
+                      "nullable": true,
+                      "exclusiveMinimum": 0,
+                      "examples": [
+                        10
+                      ]
+                    },
+                    "sheetId": {
+                      "type": "integer",
+                      "description": "The ID of the sheet this range is on.",
+                      "title": "Sheet Id",
+                      "default": null,
+                      "nullable": true,
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "startColumnIndex": {
+                      "type": "integer",
+                      "description": "The start column (0-based, inclusive) of the range.",
+                      "title": "Start Column Index",
+                      "default": null,
+                      "nullable": true,
+                      "minimum": 0,
+                      "examples": [
+                        0
+                      ]
+                    },
+                    "startRowIndex": {
+                      "type": "integer",
+                      "description": "The start row (0-based, inclusive) of the range.",
+                      "title": "Start Row Index",
+                      "default": null,
+                      "nullable": true,
+                      "minimum": 0,
+                      "examples": [
+                        0
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "excludeTablesInBandedRanges": {
+            "type": "boolean",
+            "description": "True if tables should be excluded in the banded ranges. False if not set.",
+            "title": "Exclude Tables In Banded Ranges",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              false
+            ]
+          },
+          "includeGridData": {
+            "type": "boolean",
+            "description": "True if grid data should be returned. Ignored if a field mask is set.",
+            "title": "Include Grid Data",
+            "default": null,
+            "nullable": true,
+            "examples": [
+              true
+            ]
+          },
+          "spreadsheetId": {
+            "type": "string",
+            "description": "The ID of the spreadsheet to request.",
+            "title": "Spreadsheet Id",
+            "examples": [
+              "abc123xyz789"
+            ]
+          }
+        },
+        "required": [
+          "spreadsheetId",
+          "dataFilters"
+        ],
+        "title": "GetSpreadsheetByDataFilterRequest"
+      }
+    }
+  }
+]
