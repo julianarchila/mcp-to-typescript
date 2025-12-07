@@ -29,6 +29,7 @@
   "dependencies": {
     "@composio/core": "^0.2.6",
     "@openrouter/ai-sdk-provider": "^1.4.1",
-    "ai": "^5.0.108"
+    "ai": "^5.0.108",
+    "zod": "^3.24.4"
   }
 }
