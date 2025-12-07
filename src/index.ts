@@ -11,6 +11,27 @@ import type { ASTNode } from "./ast/types.ts";
 export { type JSONSchema, type ASTNode, type GeneratorOptions, ParserError };
 
 /**
+ * Validates that input is a valid JSON Schema
+ * @throws {ParserError} If validation fails
+ */
+function validateJSONSchema(input: unknown): asserts input is JSONSchema {
+  if (input === null || input === undefined) {
+    throw new ParserError("Schema cannot be null or undefined");
+  }
+
+  if (typeof input !== "object") {
+    throw new ParserError(`Schema must be an object, got ${typeof input}`);
+  }
+
+  if (Array.isArray(input)) {
+    throw new ParserError("Schema must be an object, got array");
+  }
+
+  // Basic validation - the parser will handle more detailed validation
+  // We just need to ensure it's a plain object that could be a schema
+}
+
+/**
  * Opciones para la conversión completa
  */
 export interface ConversionOptions extends GeneratorOptions {
@@ -31,7 +52,7 @@ export interface ConversionResult {
 /**
  * Convierte un JSON Schema en TypeScript
  * 
- * @param schema - JSON Schema válido
+ * @param schema - JSON Schema válido (cualquier objeto será validado internamente)
  * @param options - Opciones de generación
  * @returns Código TypeScript o AST
  * 
@@ -56,9 +77,12 @@ export interface ConversionResult {
  * ```
  */
 export function jsonSchemaToTypeScript(
-  schema: JSONSchema,
+  schema: unknown,
   options: ConversionOptions = {}
 ): ConversionResult {
+  // Validar y castear el schema
+  validateJSONSchema(schema);
+
   // Parsear schema a AST
   const ast = parseSchema(schema);
 
@@ -75,9 +99,13 @@ export function jsonSchemaToTypeScript(
 
 /**
  * Versión simplificada que retorna directamente el código
+ * 
+ * @param schema - JSON Schema válido (cualquier objeto será validado internamente)
+ * @param typeName - Nombre opcional del tipo a generar
+ * @returns Código TypeScript generado
  */
 export function convert(
-  schema: JSONSchema,
+  schema: unknown,
   typeName?: string
 ): string {
   const result = jsonSchemaToTypeScript(schema, { typeName });

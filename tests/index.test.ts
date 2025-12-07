@@ -555,6 +555,48 @@ describe("API - returnAST", () => {
   });
 });
 
+describe("Validación de entrada", () => {
+  test("rechaza null como schema", () => {
+    expect(() => convert(null)).toThrow(ParserError);
+    expect(() => convert(null)).toThrow("Schema cannot be null or undefined");
+  });
+
+  test("rechaza undefined como schema", () => {
+    expect(() => convert(undefined)).toThrow(ParserError);
+    expect(() => convert(undefined)).toThrow("Schema cannot be null or undefined");
+  });
+
+  test("rechaza string como schema", () => {
+    expect(() => convert("not an object")).toThrow(ParserError);
+    expect(() => convert("not an object")).toThrow("Schema must be an object");
+  });
+
+  test("rechaza number como schema", () => {
+    expect(() => convert(42)).toThrow(ParserError);
+    expect(() => convert(42)).toThrow("Schema must be an object");
+  });
+
+  test("rechaza boolean como schema", () => {
+    expect(() => convert(true)).toThrow(ParserError);
+    expect(() => convert(true)).toThrow("Schema must be an object");
+  });
+
+  test("rechaza array como schema", () => {
+    expect(() => convert([1, 2, 3])).toThrow(ParserError);
+    expect(() => convert([1, 2, 3])).toThrow("Schema must be an object");
+  });
+
+  test("acepta objeto vacío como schema válido", () => {
+    const result = convert({});
+    expect(result).toBe("any");
+  });
+
+  test("acepta objeto con propiedades desconocidas", () => {
+    const result = convert({ type: "string", unknownProp: "value" });
+    expect(result).toBe("string");
+  });
+});
+
 describe("Ejemplos del mundo real", () => {
   test("User con múltiples propiedades", () => {
     const schema = {
