@@ -173,6 +173,24 @@ describe("Arrays", () => {
     const result = convert(schema);
     expect(result).toBe("any[]");
   });
+
+  test("array de enum usa paréntesis", () => {
+    const schema = {
+      type: "array",
+      items: { enum: ["a", "b", "c"] },
+    };
+    const result = convert(schema);
+    expect(result).toBe('("a" | "b" | "c")[]');
+  });
+
+  test("array de union usa paréntesis", () => {
+    const schema = {
+      type: "array",
+      items: { oneOf: [{ type: "string" }, { type: "number" }] },
+    };
+    const result = convert(schema);
+    expect(result).toBe("(string | number)[]");
+  });
 });
 
 describe("Tuplas", () => {

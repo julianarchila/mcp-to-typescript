@@ -144,9 +144,9 @@ function generateArray(items: ASTNode, indent: number): string {
     return `${itemType}[]`;
   }
 
-  // Para tipos complejos, usar Array<T>
-  if (items.kind === "union" || items.kind === "intersection") {
-    return `Array<${itemType}>`;
+  // Para tipos complejos, envolver en paréntesis
+  if (items.kind === "union" || items.kind === "intersection" || items.kind === "enum") {
+    return `(${itemType})[]`;
   }
 
   // Para objetos y arrays anidados, usar T[]
