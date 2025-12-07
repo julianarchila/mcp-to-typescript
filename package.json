@@ -27,6 +27,8 @@
   },
   "private": true,
   "dependencies": {
-    "@composio/core": "^0.2.6"
+    "@composio/core": "^0.2.6",
+    "@openrouter/ai-sdk-provider": "^1.4.1",
+    "ai": "^5.0.108"
   }
 }
