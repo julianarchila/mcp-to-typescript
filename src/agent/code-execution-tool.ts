@@ -5,7 +5,7 @@
 
 import { tool } from "ai";
 import { z } from "zod";
-import type { Tool, CodeExecutionOptions } from "./types.ts";
+import type { Tool, CodeExecutionOptions, CodeExecutionResult } from "./types.ts";
 import { createToolSandbox, executeInSandbox } from "../sandbox/vm-executor.ts";
 import { generateToolTypes } from "../generator/tool-types.ts";
 
@@ -77,7 +77,7 @@ return result.data;
   return tool({
     description,
     inputSchema,
-    execute: async ({ code, reasoning }) => {
+    execute: async ({ code, reasoning }): Promise<CodeExecutionResult> => {
       // Log reasoning for debugging
       console.log(`[executeCode] Reasoning: ${reasoning}`);
       console.log(`[executeCode] Executing code:\n${code}`);

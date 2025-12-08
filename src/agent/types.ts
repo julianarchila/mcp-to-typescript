@@ -58,3 +58,19 @@ export type CodeExecutionOptions = {
   allowedGlobals?: string[];
 };
 
+/**
+ * Result from the code execution tool
+ */
+export type CodeExecutionResult = {
+  /** Whether execution was successful */
+  success: boolean;
+  /** Final output/return value from the code */
+  output: any;
+  /** Console logs captured during execution */
+  logs: string[];
+  /** Summary of tool calls made (tool name -> count) */
+  toolCallSummary: Record<string, number>;
+  /** Error message if execution failed */
+  error?: string;
+};
+

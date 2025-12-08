@@ -9,6 +9,7 @@ import {
   type Tool,
   type ToolCall,
   type SandboxResult,
+  type CodeExecutionResult,
 } from "../src/agent/index.ts";
 
 // ============================================================================
@@ -544,12 +545,11 @@ describe("createCodeExecutionTool", () => {
     const result = await executeTool.execute!(
       { code: "const sum = await add({ a: 1, b: 2 }); return sum;", reasoning: "Adding two numbers" },
       { toolCallId: "test-1", messages: [] }
-    ) as any;
+    ) as CodeExecutionResult;
 
     expect(result.success).toBe(true);
     expect(result.output).toBe(3);
     expect(result.error).toBeUndefined();
-    expect(result.toolCalls).toBeUndefined();
     expect(result.toolCallSummary).toEqual({ add: 1 });
   });
 
@@ -560,7 +560,7 @@ describe("createCodeExecutionTool", () => {
     const result = await executeTool.execute!(
       { code: "undefinedVariable;", reasoning: "This will fail" },
       { toolCallId: "test-2", messages: [] }
-    ) as any;
+    ) as CodeExecutionResult;
 
     expect(result.success).toBe(false);
     expect(result.error).toBeDefined();
@@ -575,7 +575,7 @@ describe("createCodeExecutionTool", () => {
     const result = await executeTool.execute!(
       { code: "let i = 0; while(true) { i++; }", reasoning: "Testing timeout" },
       { toolCallId: "test-3", messages: [] }
-    ) as any;
+    ) as CodeExecutionResult;
 
     expect(result.success).toBe(false);
     expect(result.error).toBeDefined();
@@ -721,13 +721,10 @@ describe("Code Execution Tool - Minimal Context Mode", () => {
         reasoning: "Testing minimal context",
       },
       { toolCallId: "test-1", messages: [] }
-    ) as any;
+    ) as CodeExecutionResult;
 
     expect(result.success).toBe(true);
     expect(result.output).toEqual({ sum: 8, product: 8 });
-    
-    // Should NOT have full toolCalls array in default mode
-    expect(result.toolCalls).toBeUndefined();
     
     // Should have tool call summary with counts
     expect(result.toolCallSummary).toEqual({
@@ -751,7 +748,7 @@ describe("Code Execution Tool - Minimal Context Mode", () => {
         reasoning: "Testing logs",
       },
       { toolCallId: "test-2", messages: [] }
-    ) as any;
+    ) as CodeExecutionResult;
 
     expect(result.logs).toHaveLength(2);
     expect(result.logs[0]).toBe("Starting calculation");
@@ -773,7 +770,7 @@ describe("Code Execution Tool - Minimal Context Mode", () => {
         reasoning: "Testing tool call counting",
       },
       { toolCallId: "test-3", messages: [] }
-    ) as any;
+    ) as CodeExecutionResult;
 
     expect(result.toolCallSummary).toEqual({ add: 3 });
   });

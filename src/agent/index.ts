@@ -12,6 +12,7 @@ export type {
   ToolCall,
   SandboxResult,
   CodeExecutionOptions,
+  CodeExecutionResult,
 } from "./types.ts";
 
 // Sandbox utilities (for advanced usage)
