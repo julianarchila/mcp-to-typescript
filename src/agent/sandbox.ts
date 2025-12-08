@@ -112,8 +112,6 @@ export function createToolSandbox(tools: Tool[]): {
       // Limited setTimeout for async operations
       return setTimeout(fn, Math.min(ms, 5000));
     },
-    // Result holder
-    __result__: undefined,
   });
 
   return { context, toolCalls, pendingPromises, logs };
