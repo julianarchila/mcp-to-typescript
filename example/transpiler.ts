@@ -2,7 +2,7 @@
  * Ejemplos de uso del transpilador JSON Schema → TypeScript
  */
 
-import { convert, jsonSchemaToTypeScript } from "./src/index.ts";
+import { convert, jsonSchemaToTypeScript } from "../src/index.ts";
 
 console.log("========================================");
 console.log("JSON Schema to TypeScript Transpiler");
