@@ -1,5 +1,5 @@
 /**
- * Ejemplos de uso del transpilador JSON Schema → TypeScript
+ * JSON Schema to TypeScript Transpiler Examples
  */
 
 import { convert, jsonSchemaToTypeScript } from "../src/index.ts";
@@ -8,8 +8,8 @@ console.log("========================================");
 console.log("JSON Schema to TypeScript Transpiler");
 console.log("========================================\n");
 
-// Ejemplo 1: Objeto simple
-console.log("📦 Ejemplo 1: Objeto con propiedades requeridas y opcionales");
+// Example 1: Simple object
+console.log("📦 Example 1: Object with required and optional properties");
 console.log("---");
 const userSchema = {
   type: "object",
@@ -28,8 +28,8 @@ console.log("\nOutput TypeScript:");
 console.log(convert(userSchema, "User"));
 console.log();
 
-// Ejemplo 2: Arrays y Enums
-console.log("📦 Ejemplo 2: Array con enum");
+// Example 2: Arrays and Enums
+console.log("📦 Example 2: Array with enum");
 console.log("---");
 const rolesSchema = {
   type: "object",
@@ -50,8 +50,8 @@ console.log("\nOutput TypeScript:");
 console.log(convert(rolesSchema, "UserRoles"));
 console.log();
 
-// Ejemplo 3: Tuplas
-console.log("📦 Ejemplo 3: Tuplas");
+// Example 3: Tuples
+console.log("📦 Example 3: Tuples");
 console.log("---");
 const coordinateSchema = {
   type: "array",
@@ -63,8 +63,8 @@ console.log("\nOutput TypeScript:");
 console.log(convert(coordinateSchema, "Coordinate3D"));
 console.log();
 
-// Ejemplo 4: Unions con oneOf
-console.log("📦 Ejemplo 4: Union con oneOf");
+// Example 4: Unions with oneOf
+console.log("📦 Example 4: Union with oneOf");
 console.log("---");
 const responseSchema = {
   oneOf: [
@@ -92,8 +92,8 @@ console.log("\nOutput TypeScript:");
 console.log(convert(responseSchema as any, "ApiResponse"));
 console.log();
 
-// Ejemplo 5: Intersección con allOf
-console.log("📦 Ejemplo 5: Intersección con allOf");
+// Example 5: Intersection with allOf
+console.log("📦 Example 5: Intersection with allOf");
 console.log("---");
 const extendedUserSchema = {
   allOf: [
@@ -121,8 +121,8 @@ console.log("\nOutput TypeScript:");
 console.log(convert(extendedUserSchema as any, "ExtendedUser"));
 console.log();
 
-// Ejemplo 6: Objeto complejo anidado
-console.log("📦 Ejemplo 6: Objeto complejo anidado");
+// Example 6: Complex nested object
+console.log("📦 Example 6: Complex nested object");
 console.log("---");
 const blogPostSchema = {
   type: "object",
@@ -159,8 +159,8 @@ console.log("\nOutput TypeScript:");
 console.log(convert(blogPostSchema, "BlogPost"));
 console.log();
 
-// Ejemplo 7: Usando returnAST
-console.log("📦 Ejemplo 7: Obteniendo el AST intermedio");
+// Example 7: Using returnAST
+console.log("📦 Example 7: Getting the intermediate AST");
 console.log("---");
 const simpleSchema = {
   type: "object",
@@ -174,5 +174,5 @@ console.log("AST:", JSON.stringify(result.ast, null, 2));
 console.log();
 
 console.log("========================================");
-console.log("✅ Todos los ejemplos ejecutados correctamente");
+console.log("✅ All examples executed successfully");
 console.log("========================================");

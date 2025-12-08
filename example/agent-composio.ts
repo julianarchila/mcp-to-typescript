@@ -12,7 +12,7 @@
 import { generateText, stepCountIs } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createCodeExecutionTool } from "../src/agent/index.ts";
-import { getComposioTools } from "../src/composio/adapter.ts";
+import { getComposioTools } from "../src/adapters/index.ts";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY || "",

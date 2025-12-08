@@ -1,24 +1,24 @@
 /**
- * Generador: Convierte AST a código TypeScript
+ * Generator: Converts AST to TypeScript code
  */
 
-import type { ASTNode } from "../ast/types.ts";
+import type { ASTNode } from "./ast.ts";
 
 export interface GeneratorOptions {
-  /** Nombre del tipo (para exportaciones nombradas) */
+  /** Type name (for named exports) */
   typeName?: string;
-  /** Usar 'type' en lugar de 'interface' para objetos */
+  /** Use 'type' instead of 'interface' for objects */
   useTypeAlias?: boolean;
-  /** Nivel de indentación inicial */
+  /** Initial indentation level */
   indent?: number;
-  /** Agregar comentarios explicativos */
+  /** Add explanatory comments */
   addComments?: boolean;
 }
 
-const INDENT = "  "; // 2 espacios
+const INDENT = "  "; // 2 spaces
 
 /**
- * Genera código TypeScript a partir de un nodo AST
+ * Generates TypeScript code from an AST node
  */
 export function generateTypeScript(
   node: ASTNode,
@@ -28,7 +28,7 @@ export function generateTypeScript(
 
   const typeDefinition = generateNode(node, indent);
 
-  // Si se proporciona un nombre, crear una declaración completa
+  // If a name is provided, create a complete declaration
   if (typeName) {
     const keyword = useTypeAlias || node.kind !== "object" ? "type" : "interface";
     const assignment = useTypeAlias || node.kind !== "object" ? " = " : " ";
@@ -83,7 +83,7 @@ function generateUnion(types: ASTNode[], indent: number): string {
     return generateNode(types[0], indent);
   }
 
-  // Si todos los tipos son primitivos o literales, unirlos en una línea
+  // If all types are primitives or literals, join them on one line
   const allSimple = types.every(
     (t) =>
       t.kind === "primitive" ||
@@ -97,10 +97,10 @@ function generateUnion(types: ASTNode[], indent: number): string {
     return types.map((t) => generateNode(t, indent)).join(" | ");
   }
 
-  // Para tipos complejos, usar saltos de línea
+  // For complex types, use line breaks
   const parts = types.map((t) => {
     const generated = generateNode(t, indent);
-    // Si el tipo tiene múltiples líneas, envolverlo en paréntesis
+    // If the type has multiple lines, wrap in parentheses
     if (generated.includes("\n") && t.kind === "object") {
       return `(${generated})`;
     }
@@ -120,7 +120,7 @@ function generateIntersection(types: ASTNode[], indent: number): string {
 
   const parts = types.map((t) => {
     const generated = generateNode(t, indent);
-    // Envolver en paréntesis si es necesario
+    // Wrap in parentheses if necessary
     if (t.kind === "union" || (generated.includes("\n") && t.kind === "object")) {
       return `(${generated})`;
     }
@@ -133,7 +133,7 @@ function generateIntersection(types: ASTNode[], indent: number): string {
 function generateArray(items: ASTNode, indent: number): string {
   const itemType = generateNode(items, indent);
 
-  // Si el tipo es simple, usar la sintaxis T[]
+  // If the type is simple, use T[] syntax
   if (
     items.kind === "primitive" ||
     items.kind === "any" ||
@@ -144,12 +144,12 @@ function generateArray(items: ASTNode, indent: number): string {
     return `${itemType}[]`;
   }
 
-  // Para tipos complejos, envolver en paréntesis
+  // For complex types, wrap in parentheses
   if (items.kind === "union" || items.kind === "intersection" || items.kind === "enum") {
     return `(${itemType})[]`;
   }
 
-  // Para objetos y arrays anidados, usar T[]
+  // For objects and nested arrays, use T[]
   return `${itemType}[]`;
 }
 
@@ -168,7 +168,7 @@ function generateObject(
 ): string {
   const entries = Object.entries(node.properties);
 
-  // Objeto vacío sin additionalProperties
+  // Empty object without additionalProperties
   if (entries.length === 0 && !node.additionalProperties) {
     return "{}";
   }
@@ -179,21 +179,21 @@ function generateObject(
 
   lines.push("{");
 
-  // Generar propiedades
+  // Generate properties
   for (const [key, prop] of entries) {
     const optional = prop.required ? "" : "?";
     const propType = generateNode(prop.type, indent + 1);
     
-    // Escapar keys que no son identificadores válidos
+    // Escape keys that aren't valid identifiers
     const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : JSON.stringify(key);
     
     lines.push(`${nextIndent}${safeKey}${optional}: ${propType};`);
   }
 
-  // Generar additionalProperties
+  // Generate additionalProperties
   if (node.additionalProperties !== undefined) {
     if (node.additionalProperties === false) {
-      // No hacer nada, no se permiten propiedades adicionales
+      // Do nothing, additional properties not allowed
     } else if (node.additionalProperties === true) {
       lines.push(`${nextIndent}[key: string]: any;`);
     } else {

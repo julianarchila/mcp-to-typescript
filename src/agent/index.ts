@@ -4,7 +4,7 @@
  */
 
 // Main tool creator
-export { createCodeExecutionTool } from "./code-execution-tool.ts";
+export { createCodeExecutionTool } from "./executor.ts";
 
 // Types
 export type {
@@ -20,11 +20,10 @@ export {
   createToolSandbox,
   executeInSandbox,
   executeWithTools,
-} from "../sandbox/vm-executor.ts";
+} from "./sandbox.ts";
 
 // Type generation utilities
 export {
   generateToolTypes,
   generateToolSummary,
-} from "../generator/tool-types.ts";
-
+} from "./tool-types.ts";

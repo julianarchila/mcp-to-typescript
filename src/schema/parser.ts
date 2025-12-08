@@ -1,8 +1,9 @@
 /**
- * Parser: Convierte JSON Schema a AST
+ * Parser: Converts JSON Schema to AST
  */
 
-import type { ASTNode } from "../ast/types.ts";
+import type { ASTNode } from "./ast.ts";
+import { ParserError } from "./errors.ts";
 
 export interface JSONSchema {
   type?: string | string[];
@@ -18,24 +19,19 @@ export interface JSONSchema {
   minItems?: number;
   maxItems?: number;
   nullable?: boolean;
-  [key: string]: unknown; // Para permitir keywords adicionales que ignoraremos
+  [key: string]: unknown; // Allow additional keywords that we'll ignore
 }
 
-export class ParserError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "ParserError";
-  }
-}
+export { ParserError };
 
 /**
- * Función principal que convierte JSON Schema a AST
+ * Main function that converts JSON Schema to AST
  */
 export function parseSchema(schema: JSONSchema): ASTNode {
-  // Primero parseamos el schema sin considerar nullable
+  // First parse the schema without considering nullable
   let node = parseSchemaWithoutNullable(schema);
   
-  // Si el schema es nullable, envolver en union con null
+  // If the schema is nullable, wrap in union with null
   if (schema.nullable === true) {
     node = {
       kind: "union",
@@ -47,10 +43,10 @@ export function parseSchema(schema: JSONSchema): ASTNode {
 }
 
 /**
- * Parsea el schema sin considerar la propiedad nullable
+ * Parses the schema without considering the nullable property
  */
 function parseSchemaWithoutNullable(schema: JSONSchema): ASTNode {
-  // Manejar const primero (mayor prioridad)
+  // Handle const first (highest priority)
   if (schema.const !== undefined) {
     return {
       kind: "const",
@@ -58,7 +54,7 @@ function parseSchemaWithoutNullable(schema: JSONSchema): ASTNode {
     };
   }
 
-  // Manejar enum
+  // Handle enum
   if (schema.enum) {
     return {
       kind: "enum",
@@ -66,10 +62,10 @@ function parseSchemaWithoutNullable(schema: JSONSchema): ASTNode {
     };
   }
 
-  // Manejar combinadores
+  // Handle combinators
   if (schema.allOf) {
     const types = schema.allOf.map(parseSchema);
-    // Optimización: si solo hay un tipo, retornarlo directamente
+    // Optimization: if only one type, return it directly
     if (types.length === 1 && types[0]) {
       return types[0];
     }
@@ -82,7 +78,7 @@ function parseSchemaWithoutNullable(schema: JSONSchema): ASTNode {
   if (schema.oneOf || schema.anyOf) {
     const schemas = schema.oneOf || schema.anyOf || [];
     const types = schemas.map(parseSchema);
-    // Optimización: si solo hay un tipo, retornarlo directamente
+    // Optimization: if only one type, return it directly
     if (types.length === 1 && types[0]) {
       return types[0];
     }
@@ -92,19 +88,19 @@ function parseSchemaWithoutNullable(schema: JSONSchema): ASTNode {
     };
   }
 
-  // Manejar type
+  // Handle type
   if (schema.type) {
     return parseType(schema);
   }
 
-  // Si no hay type, retornar any
+  // If no type, return any
   return { kind: "any" };
 }
 
 function parseType(schema: JSONSchema): ASTNode {
   const { type } = schema;
 
-  // Si type es un array (union de tipos)
+  // If type is an array (union of types)
   if (Array.isArray(type)) {
     if (type.length === 0) {
       return { kind: "never" };
@@ -119,7 +115,7 @@ function parseType(schema: JSONSchema): ASTNode {
     };
   }
 
-  // Tipos primitivos
+  // Primitive types
   switch (type) {
     case "string":
     case "number":
@@ -128,7 +124,7 @@ function parseType(schema: JSONSchema): ASTNode {
       return { kind: "primitive", type };
 
     case "integer":
-      // integer se convierte a number en TypeScript
+      // integer converts to number in TypeScript
       return { kind: "primitive", type: "number" };
 
     case "object":
@@ -138,7 +134,7 @@ function parseType(schema: JSONSchema): ASTNode {
       return parseArray(schema);
 
     default:
-      throw new ParserError(`Tipo desconocido: ${type}`);
+      throw new ParserError(`Unknown type: ${type}`);
   }
 }
 
@@ -146,7 +142,7 @@ function parseObject(schema: JSONSchema): ASTNode {
   const properties: Record<string, { type: ASTNode; required: boolean }> = {};
   const requiredFields = new Set(schema.required || []);
 
-  // Procesar propiedades
+  // Process properties
   if (schema.properties) {
     for (const [key, propSchema] of Object.entries(schema.properties)) {
       properties[key] = {
@@ -156,7 +152,7 @@ function parseObject(schema: JSONSchema): ASTNode {
     }
   }
 
-  // Procesar additionalProperties
+  // Process additionalProperties
   let additionalProperties: ASTNode | boolean | undefined;
   if (schema.additionalProperties !== undefined) {
     if (typeof schema.additionalProperties === "boolean") {
@@ -175,14 +171,14 @@ function parseObject(schema: JSONSchema): ASTNode {
 
 function parseArray(schema: JSONSchema): ASTNode {
   if (!schema.items) {
-    // Array sin items especificados -> any[]
+    // Array without specified items -> any[]
     return {
       kind: "array",
       items: { kind: "any" },
     };
   }
 
-  // Si items es un array -> tupla
+  // If items is an array -> tuple
   if (Array.isArray(schema.items)) {
     const items = schema.items.map(parseSchema);
     return {
@@ -191,7 +187,7 @@ function parseArray(schema: JSONSchema): ASTNode {
     };
   }
 
-  // Si items es un objeto -> array homogéneo
+  // If items is an object -> homogeneous array
   return {
     kind: "array",
     items: parseSchema(schema.items),

@@ -2,7 +2,7 @@
  * Type definitions for the generic tool execution agent
  */
 
-import type { JSONSchema } from "../parser/index.ts";
+import type { JSONSchema } from "../schema/parser.ts";
 
 /**
  * A tool that can be executed by the agent

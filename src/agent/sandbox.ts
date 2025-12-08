@@ -4,7 +4,7 @@
  */
 
 import * as vm from "node:vm";
-import type { Tool, ToolCall, SandboxResult, CodeExecutionOptions } from "../agent/types.ts";
+import type { Tool, ToolCall, SandboxResult, CodeExecutionOptions } from "./types.ts";
 
 /**
  * Creates a sandbox context with tool proxies that intercept and track all calls
@@ -178,4 +178,3 @@ export async function executeWithTools(
   const sandbox = createToolSandbox(tools);
   return executeInSandbox(code, sandbox, options);
 }
-

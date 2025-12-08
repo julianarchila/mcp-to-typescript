@@ -1,8 +1,8 @@
 /**
- * AST (Abstract Syntax Tree) para representar tipos de manera independiente
- * del JSON Schema original.
+ * AST (Abstract Syntax Tree) for representing types independently
+ * from the original JSON Schema.
  * 
- * Este AST es exhaustivo mediante discriminantes `kind`.
+ * This AST is exhaustive using discriminated unions with `kind`.
  */
 
 export type ASTNode =
@@ -19,7 +19,7 @@ export type ASTNode =
   | NeverNode;
 
 /**
- * Tipos primitivos básicos
+ * Basic primitive types
  */
 export interface PrimitiveNode {
   kind: "primitive";
@@ -27,7 +27,7 @@ export interface PrimitiveNode {
 }
 
 /**
- * Objetos con propiedades
+ * Objects with properties
  */
 export interface ObjectNode {
   kind: "object";
@@ -41,7 +41,7 @@ export interface PropertyDefinition {
 }
 
 /**
- * Arrays homogéneos
+ * Homogeneous arrays
  */
 export interface ArrayNode {
   kind: "array";
@@ -49,7 +49,7 @@ export interface ArrayNode {
 }
 
 /**
- * Tuplas (arrays con tipos específicos por posición)
+ * Tuples (arrays with specific types by position)
  */
 export interface TupleNode {
   kind: "tuple";
@@ -57,8 +57,8 @@ export interface TupleNode {
 }
 
 /**
- * Uniones de tipos (A | B | C)
- * Para oneOf, anyOf, enum con valores de tipos mixtos, etc.
+ * Type unions (A | B | C)
+ * For oneOf, anyOf, enum with mixed type values, etc.
  */
 export interface UnionNode {
   kind: "union";
@@ -66,8 +66,8 @@ export interface UnionNode {
 }
 
 /**
- * Intersecciones de tipos (A & B & C)
- * Para allOf
+ * Type intersections (A & B & C)
+ * For allOf
  */
 export interface IntersectionNode {
   kind: "intersection";
@@ -75,7 +75,7 @@ export interface IntersectionNode {
 }
 
 /**
- * Enum con valores literales del mismo tipo
+ * Enum with literal values of the same type
  */
 export interface EnumNode {
   kind: "enum";
@@ -83,7 +83,7 @@ export interface EnumNode {
 }
 
 /**
- * Constante con un valor específico
+ * Constant with a specific value
  */
 export interface ConstNode {
   kind: "const";
@@ -91,7 +91,7 @@ export interface ConstNode {
 }
 
 /**
- * Literal de tipo específico (usado internamente)
+ * Literal of a specific type (used internally)
  */
 export interface LiteralNode {
   kind: "literal";
@@ -99,14 +99,14 @@ export interface LiteralNode {
 }
 
 /**
- * Tipo any (cuando no se puede determinar)
+ * Any type (when type cannot be determined)
  */
 export interface AnyNode {
   kind: "any";
 }
 
 /**
- * Tipo never (para casos imposibles o additionalProperties: false)
+ * Never type (for impossible cases or additionalProperties: false)
  */
 export interface NeverNode {
   kind: "never";

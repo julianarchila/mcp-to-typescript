@@ -1,14 +1,45 @@
 /**
- * JSON Schema to TypeScript Transpiler
- * 
- * API pública para convertir JSON Schemas en tipos TypeScript
+ * MCP to TypeScript
+ * Library for converting JSON Schema to TypeScript types and executing AI-generated code with tools
  */
 
-import { parseSchema, type JSONSchema, ParserError } from "./parser/index.ts";
-import { generateTypeScript, type GeneratorOptions } from "./generator/index.ts";
-import type { ASTNode } from "./ast/types.ts";
+// ============================================================================
+// Schema Module - JSON Schema to TypeScript transpiler
+// ============================================================================
 
-export { type JSONSchema, type ASTNode, type GeneratorOptions, ParserError };
+export {
+  parseSchema,
+  generateTypeScript,
+  type JSONSchema,
+  type ASTNode,
+  type GeneratorOptions,
+  ParserError,
+} from "./schema/index.ts";
+
+// Backward compatibility: keep the main conversion functions at top level
+import { parseSchema } from "./schema/parser.ts";
+import { generateTypeScript, type GeneratorOptions } from "./schema/generator.ts";
+import { ParserError } from "./schema/errors.ts";
+import type { JSONSchema } from "./schema/parser.ts";
+import type { ASTNode } from "./schema/ast.ts";
+
+/**
+ * Options for the complete conversion
+ */
+export interface ConversionOptions extends GeneratorOptions {
+  /** If true, returns the AST instead of TypeScript code */
+  returnAST?: boolean;
+}
+
+/**
+ * Result of the conversion
+ */
+export interface ConversionResult {
+  /** Generated TypeScript code (if returnAST is false) */
+  code?: string;
+  /** Generated AST (if returnAST is true) */
+  ast?: ASTNode;
+}
 
 /**
  * Validates that input is a valid JSON Schema
@@ -26,35 +57,14 @@ function validateJSONSchema(input: unknown): asserts input is JSONSchema {
   if (Array.isArray(input)) {
     throw new ParserError("Schema must be an object, got array");
   }
-
-  // Basic validation - the parser will handle more detailed validation
-  // We just need to ensure it's a plain object that could be a schema
 }
 
 /**
- * Opciones para la conversión completa
- */
-export interface ConversionOptions extends GeneratorOptions {
-  /** Si true, retorna el AST en lugar del código TypeScript */
-  returnAST?: boolean;
-}
-
-/**
- * Resultado de la conversión
- */
-export interface ConversionResult {
-  /** Código TypeScript generado (si returnAST es false) */
-  code?: string;
-  /** AST generado (si returnAST es true) */
-  ast?: ASTNode;
-}
-
-/**
- * Convierte un JSON Schema en TypeScript
+ * Converts a JSON Schema to TypeScript
  * 
- * @param schema - JSON Schema válido (cualquier objeto será validado internamente)
- * @param options - Opciones de generación
- * @returns Código TypeScript o AST
+ * @param schema - Valid JSON Schema (any object will be validated internally)
+ * @param options - Generation options
+ * @returns TypeScript code or AST
  * 
  * @example
  * ```ts
@@ -80,29 +90,29 @@ export function jsonSchemaToTypeScript(
   schema: unknown,
   options: ConversionOptions = {}
 ): ConversionResult {
-  // Validar y castear el schema
+  // Validate and cast the schema
   validateJSONSchema(schema);
 
-  // Parsear schema a AST
+  // Parse schema to AST
   const ast = parseSchema(schema);
 
-  // Si solo se necesita el AST
+  // If only AST is needed
   if (options.returnAST) {
     return { ast };
   }
 
-  // Generar código TypeScript
+  // Generate TypeScript code
   const code = generateTypeScript(ast, options);
 
   return { code };
 }
 
 /**
- * Versión simplificada que retorna directamente el código
+ * Simplified version that returns the code directly
  * 
- * @param schema - JSON Schema válido (cualquier objeto será validado internamente)
- * @param typeName - Nombre opcional del tipo a generar
- * @returns Código TypeScript generado
+ * @param schema - Valid JSON Schema (any object will be validated internally)
+ * @param typeName - Optional name of the type to generate
+ * @returns Generated TypeScript code
  */
 export function convert(
   schema: unknown,
@@ -112,8 +122,30 @@ export function convert(
   return result.code || "";
 }
 
-/**
- * Exportaciones adicionales para uso avanzado
- */
-export { parseSchema } from "./parser/index.ts";
-export { generateTypeScript } from "./generator/index.ts";
+// ============================================================================
+// Agent Module - Code execution with tools
+// ============================================================================
+
+export {
+  createCodeExecutionTool,
+  type Tool,
+  type ToolCall,
+  type SandboxResult,
+  type CodeExecutionOptions,
+  type CodeExecutionResult,
+  createToolSandbox,
+  executeInSandbox,
+  executeWithTools,
+  generateToolTypes,
+  generateToolSummary,
+} from "./agent/index.ts";
+
+// ============================================================================
+// Adapters Module - External service integrations
+// ============================================================================
+
+export {
+  getComposioTools,
+  listComposioToolkits,
+  type ComposioToolsOptions,
+} from "./adapters/index.ts";

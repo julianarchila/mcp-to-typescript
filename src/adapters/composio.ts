@@ -89,4 +89,3 @@ export async function listComposioToolkits(userId: string): Promise<string[]> {
 
   return Array.from(toolkits);
 }
-

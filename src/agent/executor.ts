@@ -6,8 +6,8 @@
 import { tool } from "ai";
 import { z } from "zod";
 import type { Tool, CodeExecutionOptions, CodeExecutionResult } from "./types.ts";
-import { createToolSandbox, executeInSandbox } from "../sandbox/vm-executor.ts";
-import { generateToolTypes } from "../generator/tool-types.ts";
+import { createToolSandbox, executeInSandbox } from "./sandbox.ts";
+import { generateToolTypes } from "./tool-types.ts";
 
 /**
  * Creates an AI SDK tool that executes TypeScript/JavaScript code
@@ -105,4 +105,3 @@ return result.data;
     },
   });
 }
-

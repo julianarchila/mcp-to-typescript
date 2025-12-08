@@ -3,9 +3,9 @@
  * Converts tool schemas to TypeScript function signatures for LLM prompts
  */
 
-import type { Tool } from "../agent/types.ts";
-import { parseSchema } from "../parser/index.ts";
-import { generateTypeScript } from "./index.ts";
+import type { Tool } from "./types.ts";
+import { parseSchema } from "../schema/parser.ts";
+import { generateTypeScript } from "../schema/generator.ts";
 
 /**
  * Generates TypeScript function signatures from an array of tools
@@ -81,4 +81,3 @@ export function generateToolSummary(tools: Tool[]): string {
     .map((tool) => `- ${tool.name}: ${tool.description.split("\n")[0]}`)
     .join("\n");
 }
-
