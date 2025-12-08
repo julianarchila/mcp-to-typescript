@@ -544,13 +544,13 @@ describe("createCodeExecutionTool", () => {
     const result = await executeTool.execute!(
       { code: "const sum = await add({ a: 1, b: 2 }); return sum;", reasoning: "Adding two numbers" },
       { toolCallId: "test-1", messages: [] }
-    ) as { success: boolean; toolCalls: any[]; output: any; error?: string };
+    ) as any;
 
     expect(result.success).toBe(true);
     expect(result.output).toBe(3);
     expect(result.error).toBeUndefined();
-    expect(result.toolCalls).toHaveLength(1);
-    expect(result.toolCalls[0]!.name).toBe("add");
+    expect(result.toolCalls).toBeUndefined();
+    expect(result.toolCallSummary).toEqual({ add: 1 });
   });
 
   test("execute returns structured result on error", async () => {
@@ -560,7 +560,7 @@ describe("createCodeExecutionTool", () => {
     const result = await executeTool.execute!(
       { code: "undefinedVariable;", reasoning: "This will fail" },
       { toolCallId: "test-2", messages: [] }
-    ) as { success: boolean; toolCalls: any[]; output: any; error?: string };
+    ) as any;
 
     expect(result.success).toBe(false);
     expect(result.error).toBeDefined();
@@ -575,7 +575,7 @@ describe("createCodeExecutionTool", () => {
     const result = await executeTool.execute!(
       { code: "let i = 0; while(true) { i++; }", reasoning: "Testing timeout" },
       { toolCallId: "test-3", messages: [] }
-    ) as { success: boolean; toolCalls: any[]; output: any; error?: string };
+    ) as any;
 
     expect(result.success).toBe(false);
     expect(result.error).toBeDefined();
@@ -626,6 +626,158 @@ describe("createToolSandbox", () => {
 // ============================================================================
 // Integration Tests
 // ============================================================================
+
+describe("Log Capture and Context Management", () => {
+  test("captures console.log output in logs array", async () => {
+    const tools = createTestTools();
+    const result = await executeWithTools(
+      `
+      console.log("First log");
+      const sum = await add({ a: 1, b: 2 });
+      console.log("Sum is:", sum);
+      return sum;
+      `,
+      tools
+    );
+
+    expect(result.logs).toHaveLength(2);
+    expect(result.logs[0]).toBe("First log");
+    expect(result.logs[1]).toBe("Sum is: 3");
+  });
+
+  test("captures console.error and console.warn with prefixes", async () => {
+    const result = await executeWithTools(
+      `
+      console.log("normal log");
+      console.error("error log");
+      console.warn("warning log");
+      return "done";
+      `,
+      []
+    );
+
+    expect(result.logs).toHaveLength(3);
+    expect(result.logs[0]).toBe("normal log");
+    expect(result.logs[1]).toBe("ERROR: error log");
+    expect(result.logs[2]).toBe("WARN: warning log");
+  });
+
+  test("formats objects in console.log as JSON", async () => {
+    const result = await executeWithTools(
+      `
+      const obj = { name: "test", count: 42 };
+      console.log("Object:", obj);
+      return "done";
+      `,
+      []
+    );
+
+    expect(result.logs).toHaveLength(1);
+    expect(result.logs[0]).toContain('"name": "test"');
+    expect(result.logs[0]).toContain('"count": 42');
+  });
+
+  test("returns empty logs array when no console calls", async () => {
+    const result = await executeWithTools("return 42;", []);
+
+    expect(result.logs).toHaveLength(0);
+  });
+
+  test("does not print logs to stdout", async () => {
+    // This test verifies that logs are captured, not printed
+    const originalLog = console.log;
+    let stdoutCalls = 0;
+    
+    console.log = (...args: any[]) => {
+      if (!args[0]?.includes("[executeCode]")) {
+        stdoutCalls++;
+      }
+    };
+
+    const result = await executeWithTools(
+      'console.log("test"); return "done";',
+      []
+    );
+
+    console.log = originalLog;
+
+    expect(result.logs).toHaveLength(1);
+    expect(stdoutCalls).toBe(0); // No stdout calls except from executeCode
+  });
+});
+
+describe("Code Execution Tool - Minimal Context Mode", () => {
+  test("returns minimal response by default (no full tool results)", async () => {
+    const tools = createTestTools();
+    const executeTool = createCodeExecutionTool(tools);
+
+    const result = await executeTool.execute!(
+      {
+        code: `
+          const sum = await add({ a: 5, b: 3 });
+          const product = await multiply({ x: 2, y: 4 });
+          return { sum, product };
+        `,
+        reasoning: "Testing minimal context",
+      },
+      { toolCallId: "test-1", messages: [] }
+    ) as any;
+
+    expect(result.success).toBe(true);
+    expect(result.output).toEqual({ sum: 8, product: 8 });
+    
+    // Should NOT have full toolCalls array in default mode
+    expect(result.toolCalls).toBeUndefined();
+    
+    // Should have tool call summary with counts
+    expect(result.toolCallSummary).toEqual({
+      add: 1,
+      multiply: 1,
+    });
+  });
+
+  test("includes logs in response", async () => {
+    const tools = createTestTools();
+    const executeTool = createCodeExecutionTool(tools);
+
+    const result = await executeTool.execute!(
+      {
+        code: `
+          console.log("Starting calculation");
+          const sum = await add({ a: 5, b: 3 });
+          console.log("Sum:", sum);
+          return sum;
+        `,
+        reasoning: "Testing logs",
+      },
+      { toolCallId: "test-2", messages: [] }
+    ) as any;
+
+    expect(result.logs).toHaveLength(2);
+    expect(result.logs[0]).toBe("Starting calculation");
+    expect(result.logs[1]).toBe("Sum: 8");
+  });
+
+  test("counts multiple calls to same tool", async () => {
+    const tools = createTestTools();
+    const executeTool = createCodeExecutionTool(tools);
+
+    const result = await executeTool.execute!(
+      {
+        code: `
+          await add({ a: 1, b: 2 });
+          await add({ a: 3, b: 4 });
+          await add({ a: 5, b: 6 });
+          return "done";
+        `,
+        reasoning: "Testing tool call counting",
+      },
+      { toolCallId: "test-3", messages: [] }
+    ) as any;
+
+    expect(result.toolCallSummary).toEqual({ add: 3 });
+  });
+});
 
 describe("Integration", () => {
   test("complete workflow: define tools, generate types, execute code", async () => {

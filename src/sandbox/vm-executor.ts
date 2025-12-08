@@ -13,9 +13,11 @@ export function createToolSandbox(tools: Tool[]): {
   context: vm.Context;
   toolCalls: ToolCall[];
   pendingPromises: Promise<any>[];
+  logs: string[];
 } {
   const toolCalls: ToolCall[] = [];
   const pendingPromises: Promise<any>[] = [];
+  const logs: string[] = [];
 
   // Create wrapper functions for each tool
   const toolProxies: Record<string, (...args: any[]) => any> = {};
@@ -76,15 +78,26 @@ export function createToolSandbox(tools: Tool[]): {
     };
   }
 
+  // Helper to format log arguments
+  const formatLogArgs = (args: any[]): string => {
+    return args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ');
+  };
+
   // Create the VM context with tool proxies and safe globals
   const context = vm.createContext({
     // Tool functions available directly by name
     ...toolProxies,
     // Common safe globals
     console: {
-      log: (...args: any[]) => console.log("[sandbox]", ...args),
-      error: (...args: any[]) => console.error("[sandbox]", ...args),
-      warn: (...args: any[]) => console.warn("[sandbox]", ...args),
+      log: (...args: any[]) => {
+        logs.push(formatLogArgs(args));
+      },
+      error: (...args: any[]) => {
+        logs.push(`ERROR: ${formatLogArgs(args)}`);
+      },
+      warn: (...args: any[]) => {
+        logs.push(`WARN: ${formatLogArgs(args)}`);
+      },
     },
     JSON,
     Math,
@@ -103,7 +116,7 @@ export function createToolSandbox(tools: Tool[]): {
     __result__: undefined,
   });
 
-  return { context, toolCalls, pendingPromises };
+  return { context, toolCalls, pendingPromises, logs };
 }
 
 /**
@@ -115,7 +128,7 @@ export async function executeInSandbox(
   options: CodeExecutionOptions = {}
 ): Promise<SandboxResult> {
   const { maxExecutionTime = 30000 } = options;
-  const { context, toolCalls, pendingPromises } = sandbox;
+  const { context, toolCalls, pendingPromises, logs } = sandbox;
 
   try {
     // Wrap code in async IIFE - the LLM should use `return` for the final result
@@ -142,11 +155,13 @@ export async function executeInSandbox(
     return {
       toolCalls,
       output,
+      logs,
     };
   } catch (error: any) {
     return {
       toolCalls,
       output: undefined,
+      logs,
       error: error instanceof Error ? error : new Error(String(error)),
     };
   }

@@ -88,16 +88,18 @@ return result.data;
       // Execute code in VM
       const result = await executeInSandbox(code, sandbox, options);
 
-      // Format the response
+      // Count tool calls for summary
+      const toolCallCounts: Record<string, number> = {};
+      for (const tc of result.toolCalls) {
+        toolCallCounts[tc.name] = (toolCallCounts[tc.name] || 0) + 1;
+      }
+
+      // Format the response - minimal context
       return {
         success: !result.error,
-        toolCalls: result.toolCalls.map((tc) => ({
-          name: tc.name,
-          arguments: tc.arguments,
-          result: tc.result,
-          error: tc.error,
-        })),
         output: result.output,
+        logs: result.logs,
+        toolCallSummary: toolCallCounts,
         error: result.error?.message,
       };
     },

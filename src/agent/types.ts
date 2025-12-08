@@ -42,6 +42,8 @@ export type SandboxResult = {
   toolCalls: ToolCall[];
   /** Final output/return value from the code */
   output: any;
+  /** Console logs captured during execution */
+  logs: string[];
   /** Error if execution failed */
   error?: Error;
 };
