@@ -20,7 +20,7 @@
 import { generateText, stepCountIs } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createCodeExecutionTool } from "../src/agent/index.ts";
-import { getComposioTools } from "../src/composio/adapter.ts";
+import { getComposioTools } from "../src/index.ts";
 
 // Test account - safe for LLM testing
 const TEST_USER_ID = "j57antztt10jqe7cfzr7qapdh17p7tfb";
