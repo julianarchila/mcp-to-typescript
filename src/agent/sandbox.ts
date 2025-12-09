@@ -90,13 +90,25 @@ export function createToolSandbox(tools: Tool[]): {
     // Common safe globals
     console: {
       log: (...args: any[]) => {
+        /* console.log("[Sandbox Log]");
+        console.log('-'.repeat(20));
+        console.log(formatLogArgs(args)); */
         logs.push(formatLogArgs(args));
+        // console.log('-'.repeat(20));
       },
       error: (...args: any[]) => {
+        /* console.error("[Sandbox Error]");
+        console.log('-'.repeat(20));
+        console.log(formatLogArgs(args)); */
         logs.push(`ERROR: ${formatLogArgs(args)}`);
+        // console.log('-'.repeat(20));
       },
       warn: (...args: any[]) => {
+        /* console.error("[Sandbox Warn]");
+        console.log('-'.repeat(20));
+        console.log(formatLogArgs(args)); */
         logs.push(`WARN: ${formatLogArgs(args)}`);
+        // console.log('-'.repeat(20));
       },
     },
     JSON,

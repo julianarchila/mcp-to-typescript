@@ -24,18 +24,10 @@ import { getComposioTools } from "../src/index.ts";
 
 // Test account - safe for LLM testing
 const TEST_USER_ID = "j57antztt10jqe7cfzr7qapdh17p7tfb";
-const TEST_SPREADSHEET_ID = "1biMeNqihJGvuu1Ee21hPT1_-3vb7iH5F59_Y3fi--UY";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY || "",
 });
-
-console.log("=".repeat(60));
-console.log("Google Sheets Integration Test");
-console.log("=".repeat(60));
-console.log(`\nTest Account: ${TEST_USER_ID}`);
-console.log(`Spreadsheet: https://docs.google.com/spreadsheets/d/${TEST_SPREADSHEET_ID}/edit`);
-console.log("\nFetching Google Sheets tools from Composio...\n");
 
 // Fetch Google Sheets tools from Composio
 const sheetsTools = await getComposioTools({
@@ -50,7 +42,7 @@ if (sheetsTools.length > 10) {
 }
 
 const executeCode = createCodeExecutionTool(sheetsTools, {
-  maxExecutionTime: 60000, // Allow 60 seconds for batch operations
+  maxExecutionTime: 100000, // Allow 60 seconds for batch operations
 });
 
 const sheetName = `Random Data ${Date.now()}`;
@@ -58,20 +50,22 @@ const sheetName = `Random Data ${Date.now()}`;
 console.log(`\nAsking LLM to create sheet "${sheetName}" with 100 rows of random numbers...\n`);
 
 const result = await generateText({
-  model: openrouter.chat("anthropic/claude-sonnet-4.5"),
+  model: openrouter.chat("anthropic/claude-haiku-4.5"),
   messages: [
     {
       role: "user",
-      content: `Create a new sheet called "${sheetName}" in spreadsheet ${TEST_SPREADSHEET_ID}, then populate it with 100 rows of random numbers.
+      content: `Create a new sheet called "${sheetName}" in spreadsheet https://docs.google.com/spreadsheets/d/1jDr3KDFNBnwdi9_-AFMFYvjyX8q904QHC0nWdyQ4Ung/edit?gid=0#gid=0, then populate it with 500 rows of data that looks like sales records.
 
 Each row should have 5 columns:
-- Column A: Row number (1-100)
-- Column B: Random integer between 1-1000
-- Column C: Random decimal between 0-1 (2 decimal places)
-- Column D: Random integer between 1-100
-- Column E: Sum of columns B, C, and D
+- Column A: Date in YYYY-MM-DD format (from january to december 2025)
+- Column B: Product name (Generate a list of 10 product names and use them randomly here)
+- Column C: Full sale price 
+- Column D: Seller Name (We will have 5 sellers: Pepito, Juanita, Paco, Bob, Camila) 
+- Column E: City (Choose from: Bogota, Medellin, Pererira, Barranquilla, Chia)
 
-Use batch operations where possible for efficiency. First create the sheet, then use batch update to add all data at once.`,
+Use batch operations where possible for efficiency. First create the sheet, then use batch update to add the data
+Data should be in spanish and in COP. Make sure you generate realistic looking data.
+`,
     },
   ],
   tools: { executeCode },
@@ -110,16 +104,4 @@ for (const step of result.steps) {
     }
   }
 }
-
-console.log("\n" + "=".repeat(60));
-console.log("Verification");
-console.log("=".repeat(60));
-console.log(`\nCheck the spreadsheet at:`);
-console.log(`https://docs.google.com/spreadsheets/d/${TEST_SPREADSHEET_ID}/edit`);
-console.log(`\nLook for sheet: "${sheetName}"`);
-console.log(`\nExpected:`);
-console.log(`  - [ ] New sheet created`);
-console.log(`  - [ ] 100 rows of data`);
-console.log(`  - [ ] Columns A-E populated correctly`);
-console.log(`  - [ ] Column E contains correct sums`);
 

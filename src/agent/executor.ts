@@ -54,10 +54,15 @@ IMPORTANT:
 - Always access specific properties or use JSON.stringify() when you need string output
 - Use \`return\` statement for the final result
 - Use console.log() for debugging output
+- Use console.log() only for getting debug info, if you are going to log data make sure to trim it first to avoid exceeding token limits.
+- If you can keep info in code meory do so instead of logging it out. (Example for filtering data and copying the data somewhere else)
+- Try to avoid returning large amounts of data directly.
 
 Example:
 \`\`\`javascript
-const result = await someFunction({ param: value });
+const data = await someFunction({ param: value });
+const filtered = data.items.filter(item => item.active);
+const result = writeDataFunction({ items: filtered });
 return result.data;
 \`\`\``;
 
